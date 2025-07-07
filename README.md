@@ -1,34 +1,73 @@
-# My Python Template
+# 📚 Anime RAG Assistant — Project Plan (MVP)
 
-```sh
-make
+A FastAPI + Gradio-powered chatbot that uses a local LLaMA3 8B model and RAG over subtitle & episode summaries from popular anime series.
 
-# After update `setup.cfg`
-make lockdeps
-make deps
-```
+---
 
-## Run
-```sh
-# start docker:
-sh scripts/00_start.sh
-```
+## ✅ MVP Goals
 
+| Goal | Description |
+|------|-------------|
+| 🔍 Ask Qs about anime | Answer episode-level questions via RAG over SRT/summary |
+| 📄 Chunk subtitles + metadata | Use LlamaIndex for ingest + retrieval |
+| 💬 Stream responses | Serve via vLLM (LLaMA3 8B, OpenAI-compatible) |
+| 🧪 Eval output quality | Use [DeepEval](https://github.com/confident-ai/deepeval) (an open-source LLM evaluation framework) + some manual tests |
+| 🧠 Trace everything | [Langfuse](https://github.com/langfuse/langfuse) (an open-source LLM observability and evaluation platform) integration for traces, latency, prompt versions |
+| 🖥️ Interfaces | Swagger docs + Gradio UI for chat/testing |
 
-## Add Secrets
+---
 
-Secrets and configmaps should be declared with their respective types in the src.core.settings file.
+## 🧱 Project Phases
 
-In the case of secrets, we must only place their values ​​in the .env file (non-versioned file).
+### 🔹 Phase 1 — Data Ingestion & Indexing
+- Subtitle/Summary preprocessor: custom parser for `.srt`, `.md`, `.txt`
+- Chunking & metadata with `LlamaIndex` (episode ID, speaker, timestamp)
+- Use Chroma (local) for persistence
 
-```py
-python -m src.core.settings
-> API_KEY='FOO'
-```
+### 🔹 Phase 2 — RAG QA Chain
+- Use `LlamaIndex` retriever (dense or hybrid)
+- Serve LLaMA3 8B via `vLLM`
+- Langfuse tags for model + prompt versioning
 
-> echo 'API_KEY=123' >> .env
+### 🔹 Phase 3 — API & UI Integration
+- FastAPI backend with `/chat`, `/search`, `/healthz`, `/meta`
+- Swagger auto-generated docs
+- Gradio UI for testing chat + feedback
 
-```py
-python -m src.core.settings
-> API_KEY='123'
+### 🔹 Phase 4 — Evaluation
+- Add `DeepEval` test cases with `LLMTestCase`
+- Manual grading via JSON/YAML test set
+- (Optional) `Ragas` for document-grounded eval
+
+### 🔹 Phase 5 — Observability
+- Langfuse for full trace logging (input/output/context)
+- Tags: episode, model, latency, chunk count
+- User feedback (👍/👎) via Langfuse or local DB
+
+---
+
+## 🧱 Directory Structure
+
+```bash
+anime_assistant/
+├── app/
+│   ├── main.py            # FastAPI entrypoint
+│   ├── ingest.py          # Subtitle/summary parser → index
+│   ├── retriever.py       # LlamaIndex retriever setup
+│   ├── rag_chain.py       # LangChain RAG chain
+│   ├── models.py          # Pydantic schemas
+│   ├── langfuse_hook.py   # Langfuse instrumentation
+│   ├── gradio_ui.py       # Optional UI
+│   └── config.py          # Central settings
+├── data/
+│   ├── subtitles/         # .srt files
+│   ├── summaries/         # episode summaries (markdown / text)
+│   └── index/             # LlamaIndex persist dir
+├── tests/
+│   ├── test_eval_deepeval.py
+│   └── qa_cases.json      # manual eval set
+├── Dockerfile
+├── docker-compose.yml
+├── requirements.txt
+└── README.md
 ```
