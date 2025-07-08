@@ -274,11 +274,11 @@ jupyterlab-server==2.27.3
     # via jupyterlab
 kubernetes==33.1.0
     # via chromadb
-llama-cloud==0.1.30
+llama-cloud==0.1.32
     # via
     #   llama-cloud-services
     #   llama-index-indices-managed-llama-cloud
-llama-cloud-services==0.6.41
+llama-cloud-services==0.6.43
     # via llama-parse
 llama-index==0.12.47
     # via anime-assistant (setup.cfg)
@@ -307,7 +307,7 @@ llama-index-embeddings-openai==0.3.1
     # via
     #   llama-index
     #   llama-index-cli
-llama-index-indices-managed-llama-cloud==0.7.9
+llama-index-indices-managed-llama-cloud==0.7.10
     # via llama-index
 llama-index-instrumentation==0.2.0
     # via llama-index-workflows
@@ -333,9 +333,9 @@ llama-index-readers-llama-parse==0.4.0
     # via llama-index
 llama-index-vector-stores-chroma==0.4.2
     # via anime-assistant (setup.cfg)
-llama-index-workflows==1.0.1
+llama-index-workflows==1.1.0
     # via llama-index-core
-llama-parse==0.6.41
+llama-parse==0.6.43
     # via llama-index-readers-llama-parse
 loguru==0.7.3
     # via anime-assistant (setup.cfg)
@@ -414,7 +414,7 @@ odict==1.9.0
     # via node
 onnxruntime==1.22.0
     # via chromadb
-openai==1.93.1
+openai==1.93.2
     # via
     #   llama-index-agent-openai
     #   llama-index-embeddings-openai
@@ -716,7 +716,7 @@ traitlets==5.14.3
     #   nbformat
 typer==0.16.0
     # via chromadb
-types-python-dateutil==2.9.0.20250516
+types-python-dateutil==2.9.0.20250708
     # via arrow
 typing-extensions==4.14.1
     # via
