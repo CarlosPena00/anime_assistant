@@ -186,3 +186,4 @@ poetry.toml
 # End of https://www.toptal.com/developers/gitignore/api/python,jupyternotebooks
 micromamba.mk
 .micromambaenv
+.vscode/settings.json

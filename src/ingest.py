@@ -3,6 +3,7 @@ from typing import Any
 
 import requests
 import requests_cache
+from bs4 import BeautifulSoup
 from loguru import logger
 
 from src.utils import save_data
@@ -65,6 +66,58 @@ def filter_anime_metadata(animes_data: list[dict[str, Any]]) -> list[dict[str, A
     return animes_data
 
 
+def _extract_synopsis_from_mal(html: str) -> str | None:
+    """Extracts the synopsis block following <h2>Synopsis</h2>."""
+    soup = BeautifulSoup(html, "html.parser")
+
+    try:
+        header = soup.find("h2", string=lambda t: t and "Synopsis" in t)
+        if not header:
+            logger.warning("Synopsis header not found")
+            return None
+        synopsis_div = header.find_parent("div")
+        if synopsis_div:
+            header.extract()
+            synopsis_text = synopsis_div.get_text(separator=" ", strip=True)
+            return synopsis_text or None
+
+        logger.warning("No parent div found for synopsis header")
+        return None
+
+    except Exception:
+        logger.exception("Error parsing synopsis HTML")
+        return None
+
+
+def fetch_episode_synopsis(episode_url: str) -> str | None:
+    """Fetches the synopsis of a specific anime episode by scraping HTML.
+
+    Args:
+        episode_url: URL of the specific anime episode page.
+
+    Returns:
+        The cleaned synopsis string if found, otherwise None.
+    """
+    if not episode_url:
+        return None
+    try:
+        resp = requests.get(episode_url, timeout=10)
+    except requests.RequestException as e:
+        logger.error("Network error fetching episode {exc}", exc=str(e))
+        return None
+    if resp.status_code != 200:
+        logger.warning(
+            f"Failed to fetch episode {episode_url} — Status {resp.status_code}",
+        )
+        return None
+
+    synopsis = _extract_synopsis_from_mal(resp.text)
+    if not synopsis:
+        logger.info(f"No synopsis found for episode at {episode_url}")
+        return None
+    return synopsis
+
+
 def fetch_episodes(mal_id: int) -> list[dict[str, Any]]:
     """
     Fetch all episodes for a given MyAnimeList anime ID using the Jikan API.
@@ -86,6 +139,9 @@ def fetch_episodes(mal_id: int) -> list[dict[str, Any]]:
         data = resp.json()
         if not data.get("data"):
             break
+        for ep in data["data"]:
+            synopsis = fetch_episode_synopsis(ep["url"])
+            ep["synopsis"] = synopsis
         episodes.extend(data["data"])
         if not data.get("pagination", {}).get("has_next_page"):
             break
