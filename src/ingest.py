@@ -1,10 +1,11 @@
-import json
 from pathlib import Path
 from typing import Any
 
 import requests
 import requests_cache
 from loguru import logger
+
+from src.utils import save_data
 
 requests_cache.install_cache("data/mal_cache", backend="sqlite", expire_after=86400)
 
@@ -19,22 +20,6 @@ RAW_DIR.mkdir(parents=True, exist_ok=True)
 
 
 JIKAN_BASE = "https://api.jikan.moe/v4"
-
-
-def save_data(file_path: str | Path, data: dict[str, Any]) -> None:
-    """
-    Save the provided data as a JSON file to the specified file path.
-
-    Args:
-        file_path (str): The path where the JSON file will be saved.
-                         file_path example: DIR / f"{process_query}_{page}.json"
-        data (dict[str, Any]): The data to be saved. If empty, nothing is written.
-    """
-
-    if not data:
-        return
-    with open(file_path, "w", encoding="utf-8") as f:
-        json.dump(data, f, indent=2, ensure_ascii=False)  # Handle Japanese
 
 
 def fetch_metadata_from_myanimelist(query: str) -> list[dict[str, Any]]:
