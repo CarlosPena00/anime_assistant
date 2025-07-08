@@ -8,6 +8,7 @@ from src.ingest import _extract_synopsis_from_mal
 from src.ingest import fetch_episode_synopsis
 from src.ingest import fetch_metadata_from_myanimelist
 from src.ingest import filter_anime_metadata
+from src.ingest import ingest_anime_metadata
 
 
 def test_filter_anime_metadata_filters_types():
@@ -120,3 +121,29 @@ def test_fetch_metadata_from_myanimelist_http_error(mock_save_data, mock_get):
     with pytest.raises(RequestException):
         fetch_metadata_from_myanimelist("bad query")
     assert mock_save_data.call_count == 0
+
+
+@patch("src.ingest.save_data")
+@patch("src.ingest.fetch_episodes")
+@patch("src.ingest.fetch_metadata_from_myanimelist")
+def test_ingest_anime_metadata_happy_path(
+    mock_fetch_metadata, mock_fetch_episodes, mock_save_data
+):
+    mock_fetch_metadata.return_value = [
+        {"mal_id": 123, "type": "TV", "title": "Show 1"},
+        {"mal_id": 456, "type": "Movie", "title": "Movie 2"},
+    ]
+    mock_fetch_episodes.side_effect = lambda mal_id: [
+        {"episode": 1, "synopsis": "Ep1"},
+        {"episode": 2, "synopsis": "Ep2"},
+    ]
+
+    result = ingest_anime_metadata("Kaguya Sama")
+    assert result == [123, 456]
+    mock_fetch_metadata.assert_called_once()
+    assert mock_fetch_episodes.call_count == 2
+    assert mock_save_data.call_count == 2
+
+    called_files = [call.kwargs["file_path"] for call in mock_save_data.call_args_list]
+    assert any("123.json" in str(f) for f in called_files)
+    assert any("456.json" in str(f) for f in called_files)

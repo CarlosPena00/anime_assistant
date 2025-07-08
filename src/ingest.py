@@ -1,3 +1,4 @@
+import time
 from pathlib import Path
 from typing import Any
 
@@ -100,6 +101,7 @@ def fetch_episode_synopsis(episode_url: str) -> str | None:
     """
     if not episode_url:
         return None
+    logger.info(f"[+] Fetching episode synopsis from: {episode_url}")
     try:
         resp = requests.get(episode_url, timeout=10)
     except requests.RequestException as e:
@@ -107,7 +109,8 @@ def fetch_episode_synopsis(episode_url: str) -> str | None:
         return None
     if resp.status_code != 200:
         logger.warning(
-            f"Failed to fetch episode {episode_url} — Status {resp.status_code}",
+            f"Failed to fetch episode {episode_url} — "
+            f"Status {resp.status_code}: {resp.reason}: {resp.text}",
         )
         return None
 
@@ -142,8 +145,35 @@ def fetch_episodes(mal_id: int) -> list[dict[str, Any]]:
         for ep in data["data"]:
             synopsis = fetch_episode_synopsis(ep["url"])
             ep["synopsis"] = synopsis
+            time.sleep(0.1)  # Avoid hitting API too fast
         episodes.extend(data["data"])
         if not data.get("pagination", {}).get("has_next_page"):
             break
         page += 1
     return episodes
+
+
+def ingest_anime_metadata(query: str) -> list[int]:
+    """
+    Ingest anime metadata from MyAnimeList based on a search query.
+    Fetches metadata, filters it, retrieves episode data, and saves it to files.
+
+    Args:
+        query (str): The search query for anime titles.
+
+    Returns:
+        list[int]: List of MyAnimeList IDs for the ingested anime.
+    """
+    logger.info(f"[+] Ingesting anime metadata for query: {query}")
+    if not query:
+        logger.warning("No query provided for anime metadata ingestion.")
+        return []
+
+    animes_data = fetch_metadata_from_myanimelist(query)
+    animes_data = filter_anime_metadata(animes_data)
+    for anime in animes_data:
+        mal_id = anime["mal_id"]
+        episodes = fetch_episodes(mal_id)
+        data = {"summary": anime, "episodes": episodes}
+        save_data(file_path=META_DIR / f"{mal_id}.json", data=data)
+    return [a["mal_id"] for a in animes_data]
