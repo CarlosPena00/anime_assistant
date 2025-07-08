@@ -50,18 +50,18 @@ A FastAPI + Gradio-powered chatbot that uses a local LLaMA3 8B model and RAG ove
 
 ```bash
 anime_assistant/
-├── app/
-│   ├── main.py            # FastAPI entrypoint
+├── src/
+│   ├── server.py          # FastAPI entrypoint
 │   ├── ingest.py          # Subtitle/summary parser → index
 │   ├── retriever.py       # LlamaIndex retriever setup
 │   ├── rag_chain.py       # LangChain RAG chain
 │   ├── models.py          # Pydantic schemas
 │   ├── langfuse_hook.py   # Langfuse instrumentation
 │   ├── gradio_ui.py       # Optional UI
-│   └── config.py          # Central settings
+│   └── settings.py        # Central settings
 ├── data/
-│   ├── subtitles/         # .srt files
-│   ├── summaries/         # episode summaries (markdown / text)
+│   ├── raw/
+│   ├── metadata/          # episode info
 │   └── index/             # LlamaIndex persist dir
 ├── tests/
 │   ├── test_eval_deepeval.py
@@ -69,5 +69,21 @@ anime_assistant/
 ├── Dockerfile
 ├── docker-compose.yml
 ├── requirements.txt
+├── requirements-dev.txt
+├── setup.cfg
 └── README.md
+```
+
+---
+
+```mermaid
+graph TD
+    A[Anime Search Query] --> C[Fetch from Jikan API - Episodes + Summaries]
+    C --> D[Chunk Summaries + Store in Vector DB]
+    E[User Question] --> F[Retrieval + Prompt Assembly]
+    D --> F
+    F --> G[vLLM - LLaMA 3 8B]
+    G --> H[Answer w/ Episode Context]
+    F --> I[Langfuse Trace]
+    H --> J[DeepEval Test]
 ```
