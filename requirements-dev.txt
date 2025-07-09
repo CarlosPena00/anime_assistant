@@ -3,7 +3,9 @@
 aiohappyeyeballs==2.6.1
     # via aiohttp
 aiohttp==3.12.13
-    # via llama-index-core
+    # via
+    #   huggingface-hub
+    #   llama-index-core
 aiosignal==1.4.0
     # via aiohttp
 aiosqlite==0.21.0
@@ -124,6 +126,8 @@ fastjsonschema==2.21.1
 filelock==3.18.0
     # via
     #   huggingface-hub
+    #   torch
+    #   transformers
     #   virtualenv
 filetype==1.2.0
     # via llama-index-core
@@ -139,6 +143,7 @@ fsspec==2025.5.1
     # via
     #   huggingface-hub
     #   llama-index-core
+    #   torch
 google-auth==2.40.3
     # via kubernetes
 googleapis-common-protos==1.70.0
@@ -170,7 +175,11 @@ httpx==0.28.1
     #   llama-index-core
     #   openai
 huggingface-hub==0.33.2
-    # via tokenizers
+    # via
+    #   llama-index-embeddings-huggingface
+    #   sentence-transformers
+    #   tokenizers
+    #   transformers
 humanfriendly==10.0
     # via coloredlogs
 identify==2.6.12
@@ -217,10 +226,13 @@ jinja2==3.1.6
     #   jupyterlab
     #   jupyterlab-server
     #   nbconvert
+    #   torch
 jiter==0.10.0
     # via openai
 joblib==1.5.1
-    # via nltk
+    # via
+    #   nltk
+    #   scikit-learn
 json5==0.12.0
     # via jupyterlab-server
 jsonpointer==3.0.0
@@ -294,6 +306,7 @@ llama-index-core==0.12.47
     #   llama-index
     #   llama-index-agent-openai
     #   llama-index-cli
+    #   llama-index-embeddings-huggingface
     #   llama-index-embeddings-openai
     #   llama-index-indices-managed-llama-cloud
     #   llama-index-llms-openai
@@ -303,6 +316,8 @@ llama-index-core==0.12.47
     #   llama-index-readers-file
     #   llama-index-readers-llama-parse
     #   llama-index-vector-stores-chroma
+llama-index-embeddings-huggingface==0.5.5
+    # via anime-assistant (setup.cfg)
 llama-index-embeddings-openai==0.3.1
     # via
     #   llama-index
@@ -384,7 +399,9 @@ nest-asyncio==1.6.0
     #   ipykernel
     #   llama-index-core
 networkx==3.5
-    # via llama-index-core
+    # via
+    #   llama-index-core
+    #   torch
 nltk==3.9.1
     # via
     #   llama-index
@@ -406,6 +423,46 @@ numpy==2.3.1
     #   llama-index-core
     #   onnxruntime
     #   pandas
+    #   scikit-learn
+    #   scipy
+    #   transformers
+nvidia-cublas-cu12==12.6.4.1
+    # via
+    #   nvidia-cudnn-cu12
+    #   nvidia-cusolver-cu12
+    #   torch
+nvidia-cuda-cupti-cu12==12.6.80
+    # via torch
+nvidia-cuda-nvrtc-cu12==12.6.77
+    # via torch
+nvidia-cuda-runtime-cu12==12.6.77
+    # via torch
+nvidia-cudnn-cu12==9.5.1.17
+    # via torch
+nvidia-cufft-cu12==11.3.0.4
+    # via torch
+nvidia-cufile-cu12==1.11.1.6
+    # via torch
+nvidia-curand-cu12==10.3.7.77
+    # via torch
+nvidia-cusolver-cu12==11.7.1.2
+    # via torch
+nvidia-cusparse-cu12==12.5.4.2
+    # via
+    #   nvidia-cusolver-cu12
+    #   torch
+nvidia-cusparselt-cu12==0.6.3
+    # via torch
+nvidia-nccl-cu12==2.26.2
+    # via torch
+nvidia-nvjitlink-cu12==12.6.85
+    # via
+    #   nvidia-cufft-cu12
+    #   nvidia-cusolver-cu12
+    #   nvidia-cusparse-cu12
+    #   torch
+nvidia-nvtx-cu12==12.6.77
+    # via torch
 oauthlib==3.3.1
     # via
     #   kubernetes
@@ -464,6 +521,7 @@ packaging==25.0
     #   nbconvert
     #   onnxruntime
     #   pytest
+    #   transformers
 pandas==2.2.3
     # via llama-index-readers-file
 pandocfilters==1.5.1
@@ -477,7 +535,9 @@ pathspec==0.12.1
 pexpect==4.9.0
     # via ipython
 pillow==11.3.0
-    # via llama-index-core
+    # via
+    #   llama-index-core
+    #   sentence-transformers
 platformdirs==4.3.8
     # via
     #   banks
@@ -580,6 +640,7 @@ pyyaml==6.0.2
     #   kubernetes
     #   llama-index-core
     #   pre-commit
+    #   transformers
     #   uvicorn
 pyzmq==27.0.0
     # via
@@ -595,6 +656,7 @@ regex==2024.11.6
     # via
     #   nltk
     #   tiktoken
+    #   transformers
 requests==2.32.4
     # via
     #   huggingface-hub
@@ -605,6 +667,7 @@ requests==2.32.4
     #   requests-cache
     #   requests-oauthlib
     #   tiktoken
+    #   transformers
 requests-cache==1.2.1
     # via anime-assistant (setup.cfg)
 requests-oauthlib==2.0.0
@@ -629,8 +692,18 @@ rsa==4.9.1
     # via google-auth
 ruff==0.11.2
     # via anime-assistant (setup.cfg)
+safetensors==0.5.3
+    # via transformers
+scikit-learn==1.7.0
+    # via sentence-transformers
+scipy==1.16.0
+    # via
+    #   scikit-learn
+    #   sentence-transformers
 send2trash==1.8.3
     # via jupyter-server
+sentence-transformers==5.0.0
+    # via llama-index-embeddings-huggingface
 setuptools==80.9.0
     # via
     #   jupyterlab
@@ -638,6 +711,8 @@ setuptools==80.9.0
     #   node
     #   odict
     #   plumber
+    #   torch
+    #   triton
     #   zope-component
     #   zope-deferredimport
     #   zope-deprecation
@@ -670,7 +745,9 @@ starlette==0.46.2
 striprtf==0.0.26
     # via llama-index-readers-file
 sympy==1.14.0
-    # via onnxruntime
+    # via
+    #   onnxruntime
+    #   torch
 tenacity==9.1.2
     # via
     #   chromadb
@@ -680,12 +757,18 @@ terminado==0.18.1
     # via
     #   jupyter-server
     #   jupyter-server-terminals
+threadpoolctl==3.6.0
+    # via scikit-learn
 tiktoken==0.9.0
     # via llama-index-core
 tinycss2==1.4.0
     # via bleach
 tokenizers==0.21.2
-    # via chromadb
+    # via
+    #   chromadb
+    #   transformers
+torch==2.7.1
+    # via sentence-transformers
 tornado==6.5.1
     # via
     #   ipykernel
@@ -700,6 +783,8 @@ tqdm==4.67.1
     #   llama-index-core
     #   nltk
     #   openai
+    #   sentence-transformers
+    #   transformers
 traitlets==5.14.3
     # via
     #   comm
@@ -714,6 +799,10 @@ traitlets==5.14.3
     #   nbclient
     #   nbconvert
     #   nbformat
+transformers==4.53.1
+    # via sentence-transformers
+triton==3.3.1
+    # via torch
 typer==0.16.0
     # via chromadb
 types-python-dateutil==2.9.0.20250708
@@ -738,7 +827,9 @@ typing-extensions==4.14.1
     #   pydantic
     #   pydantic-core
     #   referencing
+    #   sentence-transformers
     #   sqlalchemy
+    #   torch
     #   typer
     #   typing-inspect
     #   typing-inspection
