@@ -1,5 +1,4 @@
 import time
-from pathlib import Path
 from typing import Any
 
 import requests
@@ -7,21 +6,12 @@ import requests_cache
 from bs4 import BeautifulSoup
 from loguru import logger
 
+from src.constants import JIKAN_BASE
+from src.constants import META_DIR
+from src.constants import RAW_DIR
 from src.utils import save_data
 
 requests_cache.install_cache("data/mal_cache", backend="sqlite", expire_after=86400)
-
-BASE_DIR = Path(__file__).resolve().parent.parent
-RAW_DIR = BASE_DIR / "data" / "raw"
-META_DIR = BASE_DIR / "data" / "metadata"
-SUMMARY_DIR = BASE_DIR / "data" / "summaries"
-
-META_DIR.mkdir(parents=True, exist_ok=True)
-SUMMARY_DIR.mkdir(parents=True, exist_ok=True)
-RAW_DIR.mkdir(parents=True, exist_ok=True)
-
-
-JIKAN_BASE = "https://api.jikan.moe/v4"
 
 
 def fetch_metadata_from_myanimelist(query: str) -> list[dict[str, Any]]:
