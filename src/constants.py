@@ -18,3 +18,5 @@ JIKAN_BASE = "https://api.jikan.moe/v4"
 CHUNK_SIZE = 13  # Number of episodes per chunk
 
 EMBEDDING_MODEL_NAME = "BAAI/bge-small-en-v1.5"
+GROQ_MODEL_NAME = "llama3-70b-8192"
+SIMILARITY_TOP_K = 5  # Number of top similar chunks to retrieve
