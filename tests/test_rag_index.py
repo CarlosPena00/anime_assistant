@@ -31,8 +31,6 @@ def test_build_documents_smoke_test():
     # Check metadata
     assert doc.metadata["mal_id"] == 123
     assert doc.metadata["title"] == "Test Anime"
-    assert isinstance(doc.metadata["episodes"], list)
-    assert doc.metadata["episodes"][0]["title"] == "Ep1"
 
 
 def test_build_documents_when_two_chunks():

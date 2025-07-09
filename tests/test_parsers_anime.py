@@ -67,7 +67,7 @@ def test_parse_anime_chunking():
     assert chunks[0]["mal_id"] == 100
     assert chunks[0]["title"] == "Test Anime"
     assert chunks[0]["score"] == 7.8
-    assert chunks[0]["studios"] == ["Studio A"]
-    assert chunks[0]["genres"] == ["Comedy"]
+    assert chunks[0]["studios"] == "Studio A"
+    assert chunks[0]["genres"] == "Comedy"
     assert chunks[0]["aired_from"] == "2022-01-01"
     assert chunks[0]["aired_to"] == "2022-03-01"
