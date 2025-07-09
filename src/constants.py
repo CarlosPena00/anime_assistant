@@ -16,3 +16,5 @@ SUMMARY_DIR.mkdir(parents=True, exist_ok=True)
 
 JIKAN_BASE = "https://api.jikan.moe/v4"
 CHUNK_SIZE = 13  # Number of episodes per chunk
+
+EMBEDDING_MODEL_NAME = "BAAI/bge-small-en-v1.5"

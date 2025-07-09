@@ -14,6 +14,7 @@ from loguru import logger
 from src.constants import CHROMA_DIR
 from src.constants import CHUNK_SIZE
 from src.constants import CHUNKS_JSON
+from src.constants import EMBEDDING_MODEL_NAME
 from src.ingest import META_DIR
 from src.models.anime import AnimeChunk
 from src.parsers.anime import parse_anime
@@ -124,8 +125,8 @@ def build_and_persist_vector_index() -> None:
 
     logger.info("Setting up ChromaDB persistent client and collection...")
     chroma_client = chromadb.PersistentClient(path=str(CHROMA_DIR))
-    embed_model = HuggingFaceEmbedding(model_name="BAAI/bge-small-en-v1.5")
-    embed_model_ch = ChromaEmbeddingWrapper(model_name="BAAI/bge-small-en-v1.5")
+    embed_model = HuggingFaceEmbedding(model_name=EMBEDDING_MODEL_NAME)
+    embed_model_ch = ChromaEmbeddingWrapper(model_name=EMBEDDING_MODEL_NAME)
 
     logger.info(f"Using embedding model: {embed_model.model_name}")
     chroma_collection = chroma_client.get_or_create_collection(
