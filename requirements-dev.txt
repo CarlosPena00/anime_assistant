@@ -309,7 +309,9 @@ llama-index-core==0.12.47
     #   llama-index-embeddings-huggingface
     #   llama-index-embeddings-openai
     #   llama-index-indices-managed-llama-cloud
+    #   llama-index-llms-groq
     #   llama-index-llms-openai
+    #   llama-index-llms-openai-like
     #   llama-index-multi-modal-llms-openai
     #   llama-index-program-openai
     #   llama-index-question-gen-openai
@@ -326,14 +328,19 @@ llama-index-indices-managed-llama-cloud==0.7.10
     # via llama-index
 llama-index-instrumentation==0.2.0
     # via llama-index-workflows
+llama-index-llms-groq==0.3.2
+    # via anime-assistant (setup.cfg)
 llama-index-llms-openai==0.4.7
     # via
     #   llama-index
     #   llama-index-agent-openai
     #   llama-index-cli
+    #   llama-index-llms-openai-like
     #   llama-index-multi-modal-llms-openai
     #   llama-index-program-openai
     #   llama-index-question-gen-openai
+llama-index-llms-openai-like==0.4.0
+    # via llama-index-llms-groq
 llama-index-multi-modal-llms-openai==0.5.3
     # via llama-index
 llama-index-program-openai==0.3.2
@@ -800,7 +807,9 @@ traitlets==5.14.3
     #   nbconvert
     #   nbformat
 transformers==4.53.1
-    # via sentence-transformers
+    # via
+    #   llama-index-llms-openai-like
+    #   sentence-transformers
 triton==3.3.1
     # via torch
 typer==0.16.0
