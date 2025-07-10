@@ -4,6 +4,25 @@ A FastAPI + Gradio-powered chatbot that uses a local LLaMA3 8B model and RAG ove
 
 ---
 
+## How to Run
+
+```sh
+# 0) Set up your environment
+make
+
+# 1) Ingest and index anime metadata (builds the vector store)
+python -m src.rag_index
+
+# 2) Run the query engine for CLI or debugging
+python -m src.query_engine
+
+# 3) Start the FastAPI server (REST API)
+python -m src.server
+
+# 4) Launch the Gradio UI for chat
+python -m src.app
+```
+
 ## ✅ MVP Goals
 
 | Goal | Description |
