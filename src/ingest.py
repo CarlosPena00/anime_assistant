@@ -35,6 +35,7 @@ def fetch_metadata_from_myanimelist(query: str) -> list[dict[str, Any]]:
     process_query = query.replace(" ", "-").replace("/", "_")
     save_data(RAW_DIR / f"{process_query}_{page}.json", result)
     animes_data: list[dict[str, Any]] = result["data"]
+    # TODO: Parse results to TypedDict
     return animes_data
 
 
@@ -52,7 +53,7 @@ def filter_anime_metadata(animes_data: list[dict[str, Any]]) -> list[dict[str, A
     animes_data = [
         r
         for r in animes_data
-        if r["type"].lower() in {"tv", "movie", "ova", "special", "tv_special"}
+        if r.get("type", "").lower() in {"tv", "movie", "ova", "special", "tv_special"}
     ]
     return animes_data
 
