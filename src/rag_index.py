@@ -107,7 +107,7 @@ def load_or_create_chunks() -> list[AnimeChunk]:
     return all_chunks
 
 
-def build_and_persist_vector_index() -> None:
+def build_and_persist_vector_index() -> VectorStoreIndex:  # type: ignore[no-any-unimported]
     """
     Build and persists a vector index of anime documents.
 
@@ -133,7 +133,9 @@ def build_and_persist_vector_index() -> None:
         name="anime", embedding_function=embed_model_ch
     )
     logger.info(f"ChromaDB collection '{chroma_collection.name}' created or retrieved.")
-    vector_store = ChromaVectorStore(chroma_collection=chroma_collection)
+    vector_store = ChromaVectorStore(
+        chroma_collection=chroma_collection, chroma_client=chroma_client
+    )
     logger.info("ChromaVectorStore initialized.")
     storage_context = StorageContext.from_defaults(vector_store=vector_store)
 
@@ -147,6 +149,7 @@ def build_and_persist_vector_index() -> None:
     logger.info("Persist index to disk.")
     index.storage_context.persist(persist_dir=str(CHROMA_DIR))
     logger.info("RAG pipeline completed successfully.")
+    return index
 
 
 if __name__ == "__main__":

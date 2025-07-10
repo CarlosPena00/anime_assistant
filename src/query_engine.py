@@ -1,31 +1,149 @@
-from llama_index.core import StorageContext
-from llama_index.core import load_index_from_storage
-from llama_index.core.query_engine import RetrieverQueryEngine
-from llama_index.embeddings.huggingface import HuggingFaceEmbedding
-from llama_index.llms.groq import Groq
+from typing import Any
 
-from src.constants import CHROMA_DIR
-from src.constants import EMBEDDING_MODEL_NAME
+from llama_index.core.chat_engine.types import BaseChatEngine
+from llama_index.core.memory import Memory
+from llama_index.llms.groq import Groq
+from loguru import logger
+
 from src.constants import GROQ_MODEL_NAME
 from src.constants import SIMILARITY_TOP_K
+from src.rag_index import build_and_persist_vector_index
 from src.settings import settings
 
 
-def load_query_engine() -> RetrieverQueryEngine:  # type: ignore[no-any-unimported]
+def init_model() -> BaseChatEngine:  # type: ignore[no-any-unimported]
     """
-    Initializes and returns a RetrieverQueryEngine instance configured with embedding,
-    storage, retriever, and LLM.
+    Initializes and configures the anime assistant chat model.
+
+    This function performs the following steps:
+    1. Builds and persists a vector index for efficient context retrieval.
+    2. Instantiates a language model (LLM) using the Groq API.
+    3. Sets up a chat memory buffer to summarize and manage conversation history.
+    4. Creates a chat engine that:
+        - Uses the vector index for context-aware responses.
+        - Applies a system prompt with strict answering rules for anime-related queries.
+        - Restricts answers to information present in the provided context.
+        - Formats responses in markdown with clear, concise language.
 
     Returns:
-        RetrieverQueryEngine: A query engine set up with a HuggingFace embedding model,
-        Chroma storage context, retriever with top-5 similarity,
-        and a Groq Llama3-70b-8192 LLM.
+        chat_engine: An instance of the configured chat engine ready to answer
+        anime-related questions.
     """
-    embed_model = HuggingFaceEmbedding(model_name=EMBEDDING_MODEL_NAME)
-    storage_context = StorageContext.from_defaults(persist_dir=str(CHROMA_DIR))
-    index = load_index_from_storage(storage_context, embed_model=embed_model)
-
-    retriever = index.as_retriever(similarity_top_k=SIMILARITY_TOP_K)
+    logger.info("Start Model Init")
+    index = build_and_persist_vector_index()
     llm = Groq(model=GROQ_MODEL_NAME, api_key=settings.GROQ_API)
-    query_engine = RetrieverQueryEngine.from_args(retriever=retriever, llm=llm)
-    return query_engine
+    memory = Memory(llm=llm, token_limit=512)
+    chat_engine = index.as_chat_engine(
+        chat_mode="context",
+        llm=llm,
+        memory=memory,
+        similarity_top_k=SIMILARITY_TOP_K,
+        system_prompt=(
+            """
+            You are an expert Anime assistant trained to answer user questions using
+            retrieved information from MyAnimeList and official anime metadata.
+
+            Your task is to answer questions accurately and concisely using the provided
+            context, which includes:
+            - Anime titles and descriptions
+            - Episode names and summaries
+            - Airing dates, seasons, and genres
+
+            === Answering Rules ===
+            - Use only the information present in the context.
+            - If the answer is not clearly stated, say:
+                "I'm not sure based on what I found."
+            - Be clear and factual. Do not invent characters, scenes, or plot points.
+            - If the user asks about a specific episode,
+                try to match it by episode number or title.
+            - You may refer to characters, episodes, or genres mentioned in the context,
+                but do not make assumptions outside of that.
+            - Always write in English, even if the question is in another language.
+
+            === Output Format ===
+            Answer in markdown with clear formatting, short paragraphs,
+                and avoid repetition.
+            Add bullet points or numbered lists if multiple facts are relevant.
+            ====================
+        """
+            # TODO: Add examples of questions and answers
+        ),
+    )
+    logger.info("Model loaded!")
+    return chat_engine
+
+
+class ChatEngineManager:
+    """
+    ChatEngineManager is a singleton-style manager for a chat model instance.
+
+    Class Attributes:
+        _model: Holds the singleton instance of the chat model.
+
+    Methods:
+        instance():
+            Returns the singleton instance of the chat model.
+            Initializes the model using `init_model()` if it does not already exist.
+    Use:
+        chat_engine = ChatEngineManager.instance()
+    """
+
+    _model = None
+
+    @classmethod
+    def instance(cls) -> BaseChatEngine:  # type: ignore[no-any-unimported]
+        if cls._model is None:
+            cls._model = init_model()
+        return cls._model
+
+
+def run_rag_chatbot(
+    message: str, chat_history: list[dict[str, Any]] | None = None
+) -> tuple[str, list[dict[str, Any]]]:
+    """
+    Runs a Retrieval-Augmented Generation (RAG) chatbot with the provided user message
+        and chat history.
+
+    Args:
+        message (str): The user's input message to the chatbot.
+        chat_history (list[dict[str, Any]] | None, optional):
+            The conversation history as a list of message dictionaries.
+            Each dictionary should contain at least the keys 'role' and 'content'.
+            If None, a new history is started.
+
+        Example chat_history:
+        [
+            {'role': 'user', 'content': 'Hello'},
+            {'role': 'assistant', 'content': "Hello again! ..."}
+        ]
+
+    Returns:
+        tuple[str, list[dict[str, Any]]]: A tuple containing:
+            - The assistant's response as a string.
+            - The updated chat history including the latest user and assistant messages.
+
+    """
+    if chat_history is None:
+        chat_history = []
+    logger.info(f"Chatbot input: {message}")
+    chat_engine = ChatEngineManager.instance()
+    response = chat_engine.chat(message)
+    chat_history.append({"role": "user", "content": message})
+    chat_history.append({"role": "assistant", "content": response.response})
+    logger.info(f"Chatbot response: {response.response}")
+    return response.response, chat_history
+
+
+def reset_chat() -> list[dict[str, Any]]:
+    """
+    Resets the chat engine to its initial state.
+    """
+    chat_engine = ChatEngineManager.instance()
+    chat_engine.reset()
+    return []
+
+
+if __name__ == "__main__":
+    print(run_rag_chatbot("Hello!", None))
+    print(run_rag_chatbot("How are u!", None))
+    print(run_rag_chatbot("Please help!", None))
