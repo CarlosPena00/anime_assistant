@@ -29,4 +29,18 @@ repos:
             types-cachetools,
             types-boto3-lite,
             boto3-stubs,
+            lxml-stubs,
+            pandas-stubs,
+            scipy-stubs,
+            types-aiofiles,
+            types-decorator,
+            types-jsonschema,
+            types-protobuf,
+            types-psutil,
+            types-pycurl,
+            types-regex,
+            types-setuptools,
+            types-simplejson,
+            types-tqdm,
+            types-ujson
           ]
