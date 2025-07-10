@@ -53,7 +53,10 @@ def filter_anime_metadata(animes_data: list[dict[str, Any]]) -> list[dict[str, A
     animes_data = [
         r
         for r in animes_data
-        if r.get("type", "").lower() in {"tv", "movie", "ova", "special", "tv_special"}
+        if (r.get("type", "") is not None)
+        and (
+            r.get("type", "").lower() in {"tv", "movie", "ova", "special", "tv_special"}
+        )
     ]
     return animes_data
 
@@ -134,6 +137,9 @@ def fetch_episodes(mal_id: int) -> list[dict[str, Any]]:
         if not data.get("data"):
             break
         for ep in data["data"]:
+            if ep["mal_id"] % 14 == 0:
+                logger.info("Too much requests, sleeping for 1 second")
+                time.sleep(1)
             synopsis = fetch_episode_synopsis(ep["url"])
             ep["synopsis"] = synopsis
             time.sleep(0.1)  # Avoid hitting API too fast
