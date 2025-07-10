@@ -43,6 +43,11 @@ def init_model() -> BaseChatEngine:  # type: ignore[no-any-unimported]
             You are an expert Anime assistant trained to answer user questions using
             retrieved information from MyAnimeList and official anime metadata.
 
+            In the first message you need to ask which anime the user is interested in.
+            You will then retrieve relevant context from the vector index and use it to
+            answer questions about anime titles, episodes, airing dates, and genres.
+
+            === Context ===
             Your task is to answer questions accurately and concisely using the provided
             context, which includes:
             - Anime titles and descriptions
@@ -144,6 +149,6 @@ def reset_chat() -> list[dict[str, Any]]:
 
 
 if __name__ == "__main__":
-    print(run_rag_chatbot("Hello!", None))
-    print(run_rag_chatbot("How are u!", None))
-    print(run_rag_chatbot("Please help!", None))
+    response, history = run_rag_chatbot(input("What do you want to ask? "), None)
+    response, history = run_rag_chatbot(input("What do you want to ask? "), history)
+    response, history = run_rag_chatbot(input("What do you want to ask? "), history)
