@@ -1,5 +1,6 @@
 from typing import Any
 
+from llama_index.core.chat_engine.types import AgentChatResponse
 from llama_index.core.chat_engine.types import BaseChatEngine
 from llama_index.core.memory import Memory
 from llama_index.llms.groq import Groq
@@ -134,10 +135,25 @@ def run_rag_chatbot(
     logger.info(f"Chatbot input: {message}")
     chat_engine = ChatEngineManager.instance()
     response = chat_engine.chat(message)
+    log_metadata(response)
     chat_history.append({"role": "user", "content": message})
     chat_history.append({"role": "assistant", "content": response.response})
     logger.info(f"Chatbot response: {response.response}")
     return response.response, chat_history
+
+
+def log_metadata(response: AgentChatResponse) -> None:  # type: ignore[no-any-unimported]
+    try:
+        embedding_logs = [
+            r.to_dict()["node"]["metadata"] for r in response.source_nodes
+        ]
+        for idx, metadata in enumerate(embedding_logs):
+            logger.info(
+                f"Embedding log {idx:2}: {metadata['score']:0.2f}: "
+                f"{metadata['mal_id']=:<7} {metadata['title']=}"
+            )
+    except:  # noqa: E722
+        pass
 
 
 def reset_chat() -> list[dict[str, Any]]:
@@ -150,6 +166,10 @@ def reset_chat() -> list[dict[str, Any]]:
 
 
 if __name__ == "__main__":
-    response, history = run_rag_chatbot(input("What do you want to ask? "), None)
-    response, history = run_rag_chatbot(input("What do you want to ask? "), history)
+    response, history = run_rag_chatbot(
+        "Hello, I want to know about Kaguya sama love is war first season?", None
+    )
+    response, history = run_rag_chatbot(
+        "Yes!! I want to know about it, what happen in first episode?", history
+    )
     response, history = run_rag_chatbot(input("What do you want to ask? "), history)
