@@ -31,6 +31,10 @@ class ChromaEmbeddingWrapper:
         return self.model.model_name
 
 
+EMBED_MODEL = HuggingFaceEmbedding(model_name=EMBEDDING_MODEL_NAME)
+EMBED_MODEL_CH = ChromaEmbeddingWrapper(model_name=EMBEDDING_MODEL_NAME)
+
+
 def build_documents(chunks: list[AnimeChunk]) -> list[Document]:  # type: ignore[no-any-unimported]
     """
     Converts a list of AnimeChunk objects into a list of Document objects,
@@ -114,6 +118,22 @@ def build_and_persist_vector_index(force_recreate: bool = False) -> VectorStoreI
     Loads or creates anime chunks, builds LlamaIndex documents, sets up ChromaDB,
     indexes the documents using a HuggingFace embedding model, and persists the index.
     """
+    logger.info("Setting up ChromaDB persistent client and collection...")
+    chroma_client = chromadb.PersistentClient(path=str(CHROMA_DIR))
+
+    logger.info(f"Using embedding model: {EMBED_MODEL.model_name}")
+    chroma_collection = chroma_client.get_or_create_collection(
+        name="anime", embedding_function=EMBED_MODEL_CH
+    )
+    collection_size = len(chroma_collection.get()["ids"])
+
+    if collection_size > 0 and not force_recreate:
+        logger.info(
+            f"Load ChromaDB collection '{chroma_collection.name}' "
+            f"with {collection_size} documents."
+        )
+        return load_index(chroma_collection=chroma_collection)
+
     start_time = time()
     logger.info("Loading or creating anime chunks...")
     all_chunks = load_or_create_chunks(force_recreate=force_recreate)
@@ -123,16 +143,7 @@ def build_and_persist_vector_index(force_recreate: bool = False) -> VectorStoreI
     docs = build_documents(all_chunks)
     logger.info(f"Built {len(docs)} documents.")
 
-    logger.info("Setting up ChromaDB persistent client and collection...")
-    chroma_client = chromadb.PersistentClient(path=str(CHROMA_DIR))
-    embed_model = HuggingFaceEmbedding(model_name=EMBEDDING_MODEL_NAME)
-    embed_model_ch = ChromaEmbeddingWrapper(model_name=EMBEDDING_MODEL_NAME)
-
-    logger.info(f"Using embedding model: {embed_model.model_name}")
-    chroma_collection = chroma_client.get_or_create_collection(
-        name="anime", embedding_function=embed_model_ch
-    )
-    logger.info(f"ChromaDB collection '{chroma_collection.name}' created or retrieved.")
+    logger.info(f"ChromaDB:'{chroma_collection.name}': #{collection_size} docs")
     vector_store = ChromaVectorStore(
         chroma_collection=chroma_collection, chroma_client=chroma_client
     )
@@ -143,12 +154,25 @@ def build_and_persist_vector_index(force_recreate: bool = False) -> VectorStoreI
     index = VectorStoreIndex.from_documents(
         docs,
         storage_context=storage_context,
-        embed_model=embed_model,
+        embed_model=EMBED_MODEL,
         show_progress=True,
     )
     logger.info("Persist index to disk.")
     index.storage_context.persist(persist_dir=str(CHROMA_DIR))
     logger.info("RAG pipeline completed successfully.")
+    return index
+
+
+def load_index(chroma_collection: chromadb.Collection) -> VectorStoreIndex:  # type: ignore[no-any-unimported]
+    """
+    Load the vector index from the persistent storage.
+
+    Returns:
+        VectorStoreIndex: The loaded vector store index.
+    """
+    vector_store = ChromaVectorStore(chroma_collection=chroma_collection)
+    index = VectorStoreIndex.from_vector_store(vector_store, embed_model=EMBED_MODEL)
+    logger.info("Vector index loaded successfully.")
     return index
 
 
