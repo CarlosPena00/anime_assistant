@@ -68,10 +68,6 @@ class DummyChromaCollection:
         self.name = "dummy"
         self._calls = []
 
-    def __getattr__(self, item):
-        # Allow any attribute access for mocking
-        return lambda *args, **kwargs: None
-
 
 def test_load_index_logs(monkeypatch, caplog):
     dummy_collection = DummyChromaCollection()
