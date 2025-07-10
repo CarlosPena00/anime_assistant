@@ -82,7 +82,7 @@ def load_metadata_files(metadata_dir: Path) -> list[dict[str, Any]]:
     return anime_objs
 
 
-def load_or_create_chunks() -> list[AnimeChunk]:
+def load_or_create_chunks(force_recreate: bool) -> list[AnimeChunk]:
     """
     Loads or creates anime chunks from metadata files.
 
@@ -94,7 +94,7 @@ def load_or_create_chunks() -> list[AnimeChunk]:
         list[AnimeChunk]: A list of AnimeChunk objects containing parsed anime data.
     """
     all_chunks: list[AnimeChunk]
-    if CHUNKS_JSON.exists():
+    if CHUNKS_JSON.exists() and not force_recreate:
         with open(CHUNKS_JSON, encoding="utf-8") as f:
             all_chunks = json.load(f)
     else:
@@ -107,7 +107,7 @@ def load_or_create_chunks() -> list[AnimeChunk]:
     return all_chunks
 
 
-def build_and_persist_vector_index() -> VectorStoreIndex:  # type: ignore[no-any-unimported]
+def build_and_persist_vector_index(force_recreate: bool = False) -> VectorStoreIndex:  # type: ignore[no-any-unimported]
     """
     Build and persists a vector index of anime documents.
 
@@ -116,7 +116,7 @@ def build_and_persist_vector_index() -> VectorStoreIndex:  # type: ignore[no-any
     """
     start_time = time()
     logger.info("Loading or creating anime chunks...")
-    all_chunks = load_or_create_chunks()
+    all_chunks = load_or_create_chunks(force_recreate=force_recreate)
     logger.info(f"Loaded {len(all_chunks)} chunks in {time() - start_time:.2f}s.")
 
     logger.info("Building LlamaIndex documents...")
