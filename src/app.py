@@ -23,7 +23,10 @@ def create_gradio_app() -> gr.Blocks:  # type: ignore[no-any-unimported]
     with gr.Blocks() as demo:
         gr.Markdown("# Chatbot")
         chatbot = gr.Chatbot(type="messages")
-        msg = gr.Textbox(label="Pergunte algo (o historico é publico)")
+        msg = gr.Textbox(
+            label="Type your message here...",
+            placeholder="Hello, can you tell me about Naruto?",
+        )
         reset = gr.Button("Reset")
         reset.click(reset_chat, None, chatbot, queue=False)
         msg.submit(parse_chatbot, [msg, chatbot], [msg, chatbot])
