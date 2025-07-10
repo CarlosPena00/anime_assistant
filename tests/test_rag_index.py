@@ -1,8 +1,10 @@
 import json
+import types
 
 from llama_index.core import Document
 
 from src.rag_index import build_documents
+from src.rag_index import load_index
 from src.rag_index import load_metadata_files
 
 
@@ -59,3 +61,33 @@ def test_load_metadata_files(tmp_path):
     assert len(result) == 2
     titles = {a["title"] for a in result}
     assert titles == {"Anime1", "Anime2"}
+
+
+class DummyChromaCollection:
+    def __init__(self):
+        self.name = "dummy"
+        self._calls = []
+
+    def __getattr__(self, item):
+        # Allow any attribute access for mocking
+        return lambda *args, **kwargs: None
+
+
+def test_load_index_logs(monkeypatch, caplog):
+    dummy_collection = DummyChromaCollection()
+
+    # Patch ChromaVectorStore and VectorStoreIndex.from_vector_store as before
+    monkeypatch.setattr(
+        "src.rag_index.ChromaVectorStore", lambda chroma_collection: object()
+    )
+    monkeypatch.setattr(
+        "src.rag_index.VectorStoreIndex.from_vector_store",
+        lambda vector_store, embed_model: "dummy_index",
+    )
+
+    # Patch logger.info to capture log messages
+    logs = []
+    monkeypatch.setattr("src.rag_index.logger", types.SimpleNamespace(info=logs.append))
+
+    load_index(dummy_collection)
+    assert any("Vector index loaded successfully." in str(msg) for msg in logs)
