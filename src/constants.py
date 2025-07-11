@@ -6,6 +6,7 @@ CHROMA_DIR = BASE_DIR / "data" / "chroma/"
 RAW_DIR = BASE_DIR / "data" / "raw"
 META_DIR = BASE_DIR / "data" / "metadata"
 SUMMARY_DIR = BASE_DIR / "data" / "summaries"
+PROMPT_DIR = BASE_DIR / "src" / "prompts"
 
 CHUNKS_JSON.parent.mkdir(parents=True, exist_ok=True)
 CHROMA_DIR.mkdir(parents=True, exist_ok=True)

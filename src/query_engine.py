@@ -8,6 +8,7 @@ from loguru import logger
 
 from src.constants import GROQ_MODEL_NAME
 from src.constants import SIMILARITY_TOP_K
+from src.prompts.manager import load_prompt
 from src.rag_index import build_and_persist_vector_index
 from src.settings import settings
 
@@ -39,42 +40,7 @@ def init_model() -> BaseChatEngine:  # type: ignore[no-any-unimported]
         llm=llm,
         memory=memory,
         similarity_top_k=SIMILARITY_TOP_K,
-        system_prompt=(
-            """
-            You are an expert Anime assistant trained to answer user questions using
-            retrieved information from MyAnimeList and official anime metadata.
-            (over 1000 animes).
-
-            In the first message you need to ask which anime the user is interested in.
-            You will then retrieve relevant context from the vector index and use it to
-            answer questions about anime titles, episodes, airing dates, and genres.
-
-            === Context ===
-            Your task is to answer questions accurately and concisely using the provided
-            context, which includes:
-            - Anime titles and descriptions
-            - Episode names and summaries
-            - Airing dates, seasons, and genres
-
-            === Answering Rules ===
-            - Use only the information present in the context.
-            - If the answer is not clearly stated, say:
-                "I'm not sure based on what I found."
-            - Be clear and factual. Do not invent characters, scenes, or plot points.
-            - If the user asks about a specific episode,
-                try to match it by episode number or title.
-            - You may refer to characters, episodes, or genres mentioned in the context,
-                but do not make assumptions outside of that.
-            - Always write in English, even if the question is in another language.
-
-            === Output Format ===
-            Answer in markdown with clear formatting, short paragraphs,
-                and avoid repetition.
-            Add bullet points or numbered lists if multiple facts are relevant.
-            ====================
-        """
-            # TODO: Add examples of questions and answers
-        ),
+        system_prompt=load_prompt(),
     )
     logger.info("Model loaded!")
     return chat_engine
@@ -167,7 +133,7 @@ def reset_chat() -> list[dict[str, Any]]:
 
 if __name__ == "__main__":
     response, history = run_rag_chatbot(
-        "Hello, I want to know about Kaguya sama love is war first season?", None
+        "Hello, I want to know about Kaguya-sama wa Kokurasetai: Ultra Romantic", None
     )
     response, history = run_rag_chatbot(
         "Yes!! I want to know about it, what happen in first episode?", history
