@@ -172,4 +172,5 @@ if __name__ == "__main__":
     response, history = run_rag_chatbot(
         "Yes!! I want to know about it, what happen in first episode?", history
     )
-    response, history = run_rag_chatbot(input("What do you want to ask? "), history)
+    while True:
+        response, history = run_rag_chatbot(input("What do you want to ask? "), history)
