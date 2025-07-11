@@ -1,3 +1,4 @@
+import src.setup_telemetry  # noqa: F401, I001
 from typing import Any
 
 import gradio as gr

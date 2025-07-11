@@ -42,7 +42,9 @@ attrs==25.3.0
 babel==2.17.0
     # via jupyterlab-server
 backoff==2.2.1
-    # via posthog
+    # via
+    #   langfuse
+    #   posthog
 banks==2.1.3
     # via llama-index-core
 bcrypt==4.3.0
@@ -155,7 +157,9 @@ fsspec==2025.5.1
 google-auth==2.40.3
     # via kubernetes
 googleapis-common-protos==1.70.0
-    # via opentelemetry-exporter-otlp-proto-grpc
+    # via
+    #   opentelemetry-exporter-otlp-proto-grpc
+    #   opentelemetry-exporter-otlp-proto-http
 gradio==5.35.0
     # via anime-assistant (setup.cfg)
 gradio-client==1.10.4
@@ -187,6 +191,7 @@ httpx==0.28.1
     #   gradio
     #   gradio-client
     #   jupyterlab
+    #   langfuse
     #   llama-cloud
     #   llama-index-core
     #   openai
@@ -306,6 +311,8 @@ jupyterlab-server==2.27.3
     # via jupyterlab
 kubernetes==33.1.0
     # via chromadb
+langfuse==3.1.3
+    # via anime-assistant (setup.cfg)
 llama-cloud==0.1.32
     # via
     #   llama-cloud-services
@@ -505,26 +512,56 @@ openai==1.93.2
     #   llama-index-agent-openai
     #   llama-index-embeddings-openai
     #   llama-index-llms-openai
+openinference-instrumentation==0.1.34
+    # via openinference-instrumentation-llama-index
+openinference-instrumentation-llama-index==4.3.1
+    # via anime-assistant (setup.cfg)
+openinference-semantic-conventions==0.1.21
+    # via
+    #   openinference-instrumentation
+    #   openinference-instrumentation-llama-index
 opentelemetry-api==1.34.1
     # via
     #   chromadb
+    #   langfuse
+    #   openinference-instrumentation
+    #   openinference-instrumentation-llama-index
     #   opentelemetry-exporter-otlp-proto-grpc
+    #   opentelemetry-exporter-otlp-proto-http
+    #   opentelemetry-instrumentation
     #   opentelemetry-sdk
     #   opentelemetry-semantic-conventions
+opentelemetry-exporter-otlp==1.34.1
+    # via langfuse
 opentelemetry-exporter-otlp-proto-common==1.34.1
-    # via opentelemetry-exporter-otlp-proto-grpc
+    # via
+    #   opentelemetry-exporter-otlp-proto-grpc
+    #   opentelemetry-exporter-otlp-proto-http
 opentelemetry-exporter-otlp-proto-grpc==1.34.1
-    # via chromadb
+    # via
+    #   chromadb
+    #   opentelemetry-exporter-otlp
+opentelemetry-exporter-otlp-proto-http==1.34.1
+    # via opentelemetry-exporter-otlp
+opentelemetry-instrumentation==0.55b1
+    # via openinference-instrumentation-llama-index
 opentelemetry-proto==1.34.1
     # via
     #   opentelemetry-exporter-otlp-proto-common
     #   opentelemetry-exporter-otlp-proto-grpc
+    #   opentelemetry-exporter-otlp-proto-http
 opentelemetry-sdk==1.34.1
     # via
     #   chromadb
+    #   langfuse
+    #   openinference-instrumentation
     #   opentelemetry-exporter-otlp-proto-grpc
+    #   opentelemetry-exporter-otlp-proto-http
 opentelemetry-semantic-conventions==0.55b1
-    # via opentelemetry-sdk
+    # via
+    #   openinference-instrumentation-llama-index
+    #   opentelemetry-instrumentation
+    #   opentelemetry-sdk
 optional-django==0.1.0
     # via
     #   nodejs
@@ -537,7 +574,7 @@ overrides==7.7.0
     # via
     #   chromadb
     #   jupyter-server
-packaging==25.0
+packaging==24.2
     # via
     #   black
     #   build
@@ -550,9 +587,11 @@ packaging==25.0
     #   jupyterlab
     #   jupyterlab-code-formatter
     #   jupyterlab-server
+    #   langfuse
     #   marshmallow
     #   nbconvert
     #   onnxruntime
+    #   opentelemetry-instrumentation
     #   pytest
     #   transformers
 pandas==2.2.3
@@ -627,6 +666,7 @@ pydantic==2.11.7
     #   chromadb
     #   fastapi
     #   gradio
+    #   langfuse
     #   llama-cloud
     #   llama-cloud-services
     #   llama-index-core
@@ -704,7 +744,9 @@ requests==2.32.4
     #   huggingface-hub
     #   jupyterlab-server
     #   kubernetes
+    #   langfuse
     #   llama-index-core
+    #   opentelemetry-exporter-otlp-proto-http
     #   posthog
     #   requests-cache
     #   requests-oauthlib
@@ -878,8 +920,10 @@ typing-extensions==4.14.1
     #   llama-index-core
     #   mypy
     #   openai
+    #   openinference-instrumentation-llama-index
     #   opentelemetry-api
     #   opentelemetry-exporter-otlp-proto-grpc
+    #   opentelemetry-exporter-otlp-proto-http
     #   opentelemetry-sdk
     #   opentelemetry-semantic-conventions
     #   pydantic
@@ -940,7 +984,10 @@ websockets==15.0.1
 wrapt==1.17.2
     # via
     #   deprecated
+    #   langfuse
     #   llama-index-core
+    #   openinference-instrumentation-llama-index
+    #   opentelemetry-instrumentation
 yarl==1.20.1
     # via aiohttp
 zipp==3.23.0
