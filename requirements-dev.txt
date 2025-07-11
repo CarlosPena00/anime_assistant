@@ -6,6 +6,7 @@ aiohappyeyeballs==2.6.1
     # via aiohttp
 aiohttp==3.12.13
     # via
+    #   deepeval
     #   huggingface-hub
     #   llama-index-core
 aiosignal==1.4.0
@@ -14,8 +15,12 @@ aiosqlite==0.21.0
     # via llama-index-core
 annotated-types==0.7.0
     # via pydantic
+anthropic==0.57.1
+    # via deepeval
 anyio==4.9.0
     # via
+    #   anthropic
+    #   google-genai
     #   gradio
     #   httpx
     #   jupyter-server
@@ -70,6 +75,7 @@ certifi==2025.6.15
     #   kubernetes
     #   llama-cloud
     #   requests
+    #   sentry-sdk
 cffi==1.17.1
     # via argon2-cffi-bindings
 cfgv==3.4.0
@@ -80,9 +86,10 @@ chromadb==1.0.15
     # via
     #   anime-assistant (setup.cfg)
     #   llama-index-vector-stores-chroma
-click==8.2.1
+click==8.1.8
     # via
     #   black
+    #   deepeval
     #   llama-cloud-services
     #   nltk
     #   typer
@@ -103,6 +110,8 @@ decorator==5.2.1
     # via
     #   ipdb
     #   ipython
+deepeval==3.2.5
+    # via anime-assistant (setup.cfg)
 defusedxml==0.7.1
     # via
     #   llama-index-readers-file
@@ -118,10 +127,13 @@ distlib==0.3.9
     # via virtualenv
 distro==1.9.0
     # via
+    #   anthropic
     #   openai
     #   posthog
 durationpy==0.10
     # via kubernetes
+execnet==2.1.1
+    # via pytest-xdist
 executing==2.2.0
     # via stack-data
 fastapi==0.116.0
@@ -155,7 +167,11 @@ fsspec==2025.5.1
     #   llama-index-core
     #   torch
 google-auth==2.40.3
-    # via kubernetes
+    # via
+    #   google-genai
+    #   kubernetes
+google-genai==1.25.0
+    # via deepeval
 googleapis-common-protos==1.70.0
     # via
     #   opentelemetry-exporter-otlp-proto-grpc
@@ -173,6 +189,7 @@ groovy==0.1.2
 grpcio==1.73.1
     # via
     #   chromadb
+    #   deepeval
     #   opentelemetry-exporter-otlp-proto-grpc
 h11==0.16.0
     # via
@@ -187,13 +204,16 @@ httptools==0.6.4
 httpx==0.28.1
     # via
     #   anime-assistant (setup.cfg)
+    #   anthropic
     #   chromadb
+    #   google-genai
     #   gradio
     #   gradio-client
     #   jupyterlab
     #   langfuse
     #   llama-cloud
     #   llama-index-core
+    #   ollama
     #   openai
     #   safehttpx
 huggingface-hub==0.33.2
@@ -253,7 +273,9 @@ jinja2==3.1.6
     #   nbconvert
     #   torch
 jiter==0.10.0
-    # via openai
+    # via
+    #   anthropic
+    #   openai
 joblib==1.5.1
     # via
     #   nltk
@@ -407,6 +429,8 @@ mistune==3.1.3
     # via nbconvert
 mmh3==5.1.0
     # via chromadb
+monotonic==1.6
+    # via posthog
 mpmath==1.3.0
     # via sympy
 multidict==6.6.3
@@ -431,6 +455,7 @@ nbformat==5.10.4
     #   nbconvert
 nest-asyncio==1.6.0
     # via
+    #   deepeval
     #   ipykernel
     #   llama-index-core
 networkx==3.5
@@ -505,10 +530,13 @@ oauthlib==3.3.1
     #   requests-oauthlib
 odict==1.9.0
     # via node
+ollama==0.5.1
+    # via deepeval
 onnxruntime==1.22.0
     # via chromadb
 openai==1.93.2
     # via
+    #   deepeval
     #   llama-index-agent-openai
     #   llama-index-embeddings-openai
     #   llama-index-llms-openai
@@ -523,6 +551,7 @@ openinference-semantic-conventions==0.1.21
 opentelemetry-api==1.34.1
     # via
     #   chromadb
+    #   deepeval
     #   langfuse
     #   openinference-instrumentation
     #   openinference-instrumentation-llama-index
@@ -540,6 +569,7 @@ opentelemetry-exporter-otlp-proto-common==1.34.1
 opentelemetry-exporter-otlp-proto-grpc==1.34.1
     # via
     #   chromadb
+    #   deepeval
     #   opentelemetry-exporter-otlp
 opentelemetry-exporter-otlp-proto-http==1.34.1
     # via opentelemetry-exporter-otlp
@@ -553,6 +583,7 @@ opentelemetry-proto==1.34.1
 opentelemetry-sdk==1.34.1
     # via
     #   chromadb
+    #   deepeval
     #   langfuse
     #   openinference-instrumentation
     #   opentelemetry-exporter-otlp-proto-grpc
@@ -593,6 +624,7 @@ packaging==24.2
     #   onnxruntime
     #   opentelemetry-instrumentation
     #   pytest
+    #   pytest-rerunfailures
     #   transformers
 pandas==2.2.3
     # via
@@ -625,8 +657,12 @@ pluggy==1.6.0
     # via pytest
 plumber==1.7
     # via node
-posthog==5.4.0
-    # via chromadb
+portalocker==3.2.0
+    # via deepeval
+posthog==3.25.0
+    # via
+    #   chromadb
+    #   deepeval
 pre-commit==4.2.0
     # via anime-assistant (setup.cfg)
 prometheus-client==0.22.1
@@ -662,9 +698,11 @@ pycparser==2.22
     # via cffi
 pydantic==2.11.7
     # via
+    #   anthropic
     #   banks
     #   chromadb
     #   fastapi
+    #   google-genai
     #   gradio
     #   langfuse
     #   llama-cloud
@@ -672,6 +710,7 @@ pydantic==2.11.7
     #   llama-index-core
     #   llama-index-instrumentation
     #   llama-index-workflows
+    #   ollama
     #   openai
     #   pydantic-settings
 pydantic-core==2.33.2
@@ -680,6 +719,8 @@ pydantic-settings==2.10.1
     # via anime-assistant (setup.cfg)
 pydub==0.25.1
     # via gradio
+pyfiglet==1.0.3
+    # via deepeval
 pygments==2.19.2
     # via
     #   ipython
@@ -694,7 +735,21 @@ pypika==0.48.9
 pyproject-hooks==1.2.0
     # via build
 pytest==8.4.1
-    # via anime-assistant (setup.cfg)
+    # via
+    #   anime-assistant (setup.cfg)
+    #   deepeval
+    #   pytest-asyncio
+    #   pytest-repeat
+    #   pytest-rerunfailures
+    #   pytest-xdist
+pytest-asyncio==1.0.0
+    # via deepeval
+pytest-repeat==0.9.4
+    # via deepeval
+pytest-rerunfailures==12.0
+    # via deepeval
+pytest-xdist==3.8.0
+    # via deepeval
 python-dateutil==2.9.0.post0
     # via
     #   arrow
@@ -741,6 +796,8 @@ regex==2024.11.6
     #   transformers
 requests==2.32.4
     # via
+    #   deepeval
+    #   google-genai
     #   huggingface-hub
     #   jupyterlab-server
     #   kubernetes
@@ -764,9 +821,10 @@ rfc3986-validator==0.1.1
     # via
     #   jsonschema
     #   jupyter-events
-rich==14.0.0
+rich==13.9.4
     # via
     #   chromadb
+    #   deepeval
     #   typer
 rpds-py==0.26.0
     # via
@@ -794,8 +852,11 @@ send2trash==1.8.3
     # via jupyter-server
 sentence-transformers==5.0.0
     # via llama-index-embeddings-huggingface
+sentry-sdk==2.32.0
+    # via deepeval
 setuptools==80.9.0
     # via
+    #   deepeval
     #   jupyterlab
     #   llama-index-core
     #   node
@@ -822,6 +883,7 @@ six==1.17.0
     #   rfc3339-validator
 sniffio==1.3.1
     # via
+    #   anthropic
     #   anyio
     #   openai
 soupsieve==2.7
@@ -840,9 +902,13 @@ sympy==1.14.0
     # via
     #   onnxruntime
     #   torch
-tenacity==9.1.2
+tabulate==0.9.0
+    # via deepeval
+tenacity==8.5.0
     # via
     #   chromadb
+    #   deepeval
+    #   google-genai
     #   llama-cloud-services
     #   llama-index-core
 terminado==0.18.1
@@ -873,6 +939,7 @@ tornado==6.5.1
 tqdm==4.67.1
     # via
     #   chromadb
+    #   deepeval
     #   huggingface-hub
     #   llama-index-core
     #   nltk
@@ -902,6 +969,7 @@ triton==3.3.1
 typer==0.16.0
     # via
     #   chromadb
+    #   deepeval
     #   gradio
 types-python-dateutil==2.9.0.20250708
     # via arrow
@@ -909,11 +977,13 @@ typing-extensions==4.14.1
     # via
     #   aiosignal
     #   aiosqlite
+    #   anthropic
     #   anyio
     #   beautifulsoup4
     #   cattrs
     #   chromadb
     #   fastapi
+    #   google-genai
     #   gradio
     #   gradio-client
     #   huggingface-hub
@@ -954,6 +1024,7 @@ urllib3==2.5.0
     #   kubernetes
     #   requests
     #   requests-cache
+    #   sentry-sdk
 uvicorn==0.35.0
     # via
     #   anime-assistant (setup.cfg)
@@ -979,8 +1050,11 @@ websocket-client==1.8.0
     #   kubernetes
 websockets==15.0.1
     # via
+    #   google-genai
     #   gradio-client
     #   uvicorn
+wheel==0.45.1
+    # via deepeval
 wrapt==1.17.2
     # via
     #   deprecated
