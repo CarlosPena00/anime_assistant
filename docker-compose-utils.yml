@@ -1,0 +1,28 @@
+version: '3'
+
+services:
+  # docker compose -f 'docker-compose-utils.yml' up -d --build 'weaviate'
+  weaviate:
+    command:
+    - --host
+    - 0.0.0.0
+    - --port
+    - '8079'
+    - --scheme
+    - http
+    image: cr.weaviate.io/semitechnologies/weaviate:1.32.0
+    ports:
+    - 8079:8079
+    - 50051:50051
+    volumes:
+    - weaviate_data:/var/lib/weaviate
+    restart: on-failure:0
+    environment:
+      QUERY_DEFAULTS_LIMIT: 25
+      AUTHENTICATION_ANONYMOUS_ACCESS_ENABLED: 'true'
+      PERSISTENCE_DATA_PATH: '/var/lib/weaviate'
+      ENABLE_API_BASED_MODULES: 'true'
+      CLUSTER_HOSTNAME: 'node1'
+
+volumes:
+  weaviate_data:

@@ -63,7 +63,9 @@ attrs==25.3.0
     #   referencing
     #   requests-cache
 authlib==1.6.1
-    # via arize-phoenix
+    # via
+    #   arize-phoenix
+    #   weaviate-client
 babel==2.17.0
     # via jupyterlab-server
 backoff==2.2.1
@@ -151,6 +153,8 @@ deprecated==1.2.18
     #   banks
     #   llama-index-core
     #   llama-index-instrumentation
+deprecation==2.1.0
+    # via weaviate-client
 dill==0.3.8
     # via
     #   datasets
@@ -239,7 +243,11 @@ grpcio==1.73.1
     #   chromadb
     #   deepeval
     #   grpc-interceptor
+    #   grpcio-health-checking
     #   opentelemetry-exporter-otlp-proto-grpc
+    #   weaviate-client
+grpcio-health-checking==1.71.2
+    # via weaviate-client
 h11==0.16.0
     # via
     #   httpcore
@@ -268,6 +276,7 @@ httpx==0.28.1
     #   ollama
     #   openai
     #   safehttpx
+    #   weaviate-client
 httpx-sse==0.4.1
     # via langchain-community
 huggingface-hub==0.33.2
@@ -723,6 +732,7 @@ packaging==24.2
     #   black
     #   build
     #   datasets
+    #   deprecation
     #   gradio
     #   gradio-client
     #   huggingface-hub
@@ -799,6 +809,7 @@ protobuf==5.29.5
     # via
     #   arize-phoenix
     #   googleapis-common-protos
+    #   grpcio-health-checking
     #   onnxruntime
     #   opentelemetry-proto
 psutil==7.0.0
@@ -847,6 +858,7 @@ pydantic==2.11.7
     #   openai
     #   pydantic-settings
     #   ragas
+    #   weaviate-client
 pydantic-core==2.33.2
     # via pydantic
 pydantic-settings==2.10.1
@@ -1215,13 +1227,15 @@ uvicorn==0.35.0
     #   gradio
 uvloop==0.21.0
     # via uvicorn
+validators==0.35.0
+    # via weaviate-client
 virtualenv==20.31.2
     # via pre-commit
 watchfiles==1.1.0
     # via uvicorn
 wcwidth==0.2.13
     # via prompt-toolkit
-weaviate==0.1.2
+weaviate-client==4.16.1
     # via anime-assistant (setup.cfg)
 webcolors==24.11.1
     # via jsonschema
