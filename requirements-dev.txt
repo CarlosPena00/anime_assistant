@@ -7,12 +7,20 @@ aiohappyeyeballs==2.6.1
 aiohttp==3.12.13
     # via
     #   deepeval
+    #   fsspec
     #   huggingface-hub
+    #   langchain-community
     #   llama-index-core
+aioitertools==0.12.0
+    # via arize-phoenix
 aiosignal==1.4.0
     # via aiohttp
 aiosqlite==0.21.0
-    # via llama-index-core
+    # via
+    #   arize-phoenix
+    #   llama-index-core
+alembic==1.16.4
+    # via arize-phoenix
 annotated-types==0.7.0
     # via pydantic
 anthropic==0.57.1
@@ -27,10 +35,20 @@ anyio==4.9.0
     #   openai
     #   starlette
     #   watchfiles
+appdirs==1.4.4
+    # via ragas
 argon2-cffi==25.1.0
     # via jupyter-server
 argon2-cffi-bindings==21.2.0
     # via argon2-cffi
+arize-phoenix==11.8.0
+    # via anime-assistant (setup.cfg)
+arize-phoenix-client==1.13.2
+    # via arize-phoenix
+arize-phoenix-evals==0.23.0
+    # via arize-phoenix
+arize-phoenix-otel==0.12.1
+    # via arize-phoenix
 arrow==1.3.0
     # via isoduration
 asttokens==3.0.0
@@ -44,6 +62,8 @@ attrs==25.3.0
     #   jsonschema
     #   referencing
     #   requests-cache
+authlib==1.6.1
+    # via arize-phoenix
 babel==2.17.0
     # via jupyterlab-server
 backoff==2.2.1
@@ -65,7 +85,9 @@ bleach==6.2.0
 build==1.2.2.post1
     # via chromadb
 cachetools==5.5.2
-    # via google-auth
+    # via
+    #   arize-phoenix
+    #   google-auth
 cattrs==25.1.1
     # via requests-cache
 certifi==2025.6.15
@@ -77,7 +99,9 @@ certifi==2025.6.15
     #   requests
     #   sentry-sdk
 cffi==1.17.1
-    # via argon2-cffi-bindings
+    # via
+    #   argon2-cffi-bindings
+    #   cryptography
 cfgv==3.4.0
     # via pre-commit
 charset-normalizer==3.4.2
@@ -102,8 +126,14 @@ comm==0.2.2
     # via ipykernel
 coverage==7.9.2
     # via anime-assistant (setup.cfg)
+cryptography==45.0.5
+    # via authlib
 dataclasses-json==0.6.7
-    # via llama-index-core
+    # via
+    #   langchain-community
+    #   llama-index-core
+datasets==4.0.0
+    # via ragas
 debugpy==1.8.14
     # via ipykernel
 decorator==5.2.1
@@ -121,8 +151,14 @@ deprecated==1.2.18
     #   banks
     #   llama-index-core
     #   llama-index-instrumentation
+dill==0.3.8
+    # via
+    #   datasets
+    #   multiprocess
 dirtyjson==1.0.8
     # via llama-index-core
+diskcache==5.6.3
+    # via ragas
 distlib==0.3.9
     # via virtualenv
 distro==1.9.0
@@ -130,8 +166,12 @@ distro==1.9.0
     #   anthropic
     #   openai
     #   posthog
+dnspython==2.7.0
+    # via email-validator
 durationpy==0.10
     # via kubernetes
+email-validator==2.2.0
+    # via arize-phoenix
 execnet==2.1.1
     # via pytest-xdist
 executing==2.2.0
@@ -139,6 +179,7 @@ executing==2.2.0
 fastapi==0.116.0
     # via
     #   anime-assistant (setup.cfg)
+    #   arize-phoenix
     #   gradio
 fastjsonschema==2.21.1
     # via nbformat
@@ -146,6 +187,7 @@ ffmpy==0.6.0
     # via gradio
 filelock==3.18.0
     # via
+    #   datasets
     #   huggingface-hub
     #   torch
     #   transformers
@@ -160,8 +202,9 @@ frozenlist==1.7.0
     # via
     #   aiohttp
     #   aiosignal
-fsspec==2025.5.1
+fsspec==2025.3.0
     # via
+    #   datasets
     #   gradio-client
     #   huggingface-hub
     #   llama-index-core
@@ -180,16 +223,22 @@ gradio==5.35.0
     # via anime-assistant (setup.cfg)
 gradio-client==1.10.4
     # via gradio
+graphql-core==3.2.6
+    # via strawberry-graphql
 greenlet==3.2.3
     # via sqlalchemy
 griffe==1.7.3
     # via banks
 groovy==0.1.2
     # via gradio
+grpc-interceptor==0.15.4
+    # via arize-phoenix
 grpcio==1.73.1
     # via
+    #   arize-phoenix
     #   chromadb
     #   deepeval
+    #   grpc-interceptor
     #   opentelemetry-exporter-otlp-proto-grpc
 h11==0.16.0
     # via
@@ -205,19 +254,25 @@ httpx==0.28.1
     # via
     #   anime-assistant (setup.cfg)
     #   anthropic
+    #   arize-phoenix
+    #   arize-phoenix-client
     #   chromadb
     #   google-genai
     #   gradio
     #   gradio-client
     #   jupyterlab
     #   langfuse
+    #   langsmith
     #   llama-cloud
     #   llama-index-core
     #   ollama
     #   openai
     #   safehttpx
+httpx-sse==0.4.1
+    # via langchain-community
 huggingface-hub==0.33.2
     # via
+    #   datasets
     #   gradio
     #   gradio-client
     #   llama-index-embeddings-huggingface
@@ -231,6 +286,7 @@ identify==2.6.12
 idna==3.10
     # via
     #   anyio
+    #   email-validator
     #   httpx
     #   jsonschema
     #   requests
@@ -265,6 +321,7 @@ jedi==0.19.2
     # via ipython
 jinja2==3.1.6
     # via
+    #   arize-phoenix
     #   banks
     #   gradio
     #   jupyter-server
@@ -282,8 +339,12 @@ joblib==1.5.1
     #   scikit-learn
 json5==0.12.0
     # via jupyterlab-server
+jsonpatch==1.33
+    # via langchain-core
 jsonpointer==3.0.0
-    # via jsonschema
+    # via
+    #   jsonpatch
+    #   jsonschema
 jsonschema==4.24.0
     # via
     #   chromadb
@@ -333,8 +394,30 @@ jupyterlab-server==2.27.3
     # via jupyterlab
 kubernetes==33.1.0
     # via chromadb
+langchain==0.3.26
+    # via
+    #   langchain-community
+    #   ragas
+langchain-community==0.3.27
+    # via ragas
+langchain-core==0.3.69
+    # via
+    #   langchain
+    #   langchain-community
+    #   langchain-openai
+    #   langchain-text-splitters
+    #   ragas
+langchain-openai==0.3.28
+    # via ragas
+langchain-text-splitters==0.3.8
+    # via langchain
 langfuse==3.1.3
     # via anime-assistant (setup.cfg)
+langsmith==0.4.8
+    # via
+    #   langchain
+    #   langchain-community
+    #   langchain-core
 llama-cloud==0.1.32
     # via
     #   llama-cloud-services
@@ -410,12 +493,15 @@ llama-parse==0.6.43
     # via llama-index-readers-llama-parse
 loguru==0.7.3
     # via anime-assistant (setup.cfg)
+mako==1.3.10
+    # via alembic
 markdown-it-py==3.0.0
     # via rich
 markupsafe==3.0.2
     # via
     #   gradio
     #   jinja2
+    #   mako
     #   nbconvert
 marshmallow==3.26.1
     # via dataclasses-json
@@ -437,6 +523,8 @@ multidict==6.6.3
     # via
     #   aiohttp
     #   yarl
+multiprocess==0.70.16
+    # via datasets
 mypy==1.16.1
     # via anime-assistant (setup.cfg)
 mypy-extensions==1.1.0
@@ -458,6 +546,7 @@ nest-asyncio==1.6.0
     #   deepeval
     #   ipykernel
     #   llama-index-core
+    #   ragas
 networkx==3.5
     # via
     #   llama-index-core
@@ -479,11 +568,15 @@ npm==0.1.1
 numpy==2.3.1
     # via
     #   anime-assistant (setup.cfg)
+    #   arize-phoenix
     #   chromadb
+    #   datasets
     #   gradio
+    #   langchain-community
     #   llama-index-core
     #   onnxruntime
     #   pandas
+    #   ragas
     #   scikit-learn
     #   scipy
     #   transformers
@@ -537,15 +630,23 @@ onnxruntime==1.22.0
 openai==1.93.2
     # via
     #   deepeval
+    #   langchain-openai
     #   llama-index-agent-openai
     #   llama-index-embeddings-openai
     #   llama-index-llms-openai
+    #   ragas
 openinference-instrumentation==0.1.34
-    # via openinference-instrumentation-llama-index
+    # via
+    #   arize-phoenix
+    #   arize-phoenix-otel
+    #   openinference-instrumentation-llama-index
 openinference-instrumentation-llama-index==4.3.1
     # via anime-assistant (setup.cfg)
 openinference-semantic-conventions==0.1.21
     # via
+    #   arize-phoenix
+    #   arize-phoenix-client
+    #   arize-phoenix-otel
     #   openinference-instrumentation
     #   openinference-instrumentation-llama-index
 opentelemetry-api==1.34.1
@@ -561,7 +662,11 @@ opentelemetry-api==1.34.1
     #   opentelemetry-sdk
     #   opentelemetry-semantic-conventions
 opentelemetry-exporter-otlp==1.34.1
-    # via langfuse
+    # via
+    #   arize-phoenix
+    #   arize-phoenix-client
+    #   arize-phoenix-otel
+    #   langfuse
 opentelemetry-exporter-otlp-proto-common==1.34.1
     # via
     #   opentelemetry-exporter-otlp-proto-grpc
@@ -577,11 +682,16 @@ opentelemetry-instrumentation==0.55b1
     # via openinference-instrumentation-llama-index
 opentelemetry-proto==1.34.1
     # via
+    #   arize-phoenix
+    #   arize-phoenix-otel
     #   opentelemetry-exporter-otlp-proto-common
     #   opentelemetry-exporter-otlp-proto-grpc
     #   opentelemetry-exporter-otlp-proto-http
 opentelemetry-sdk==1.34.1
     # via
+    #   arize-phoenix
+    #   arize-phoenix-client
+    #   arize-phoenix-otel
     #   chromadb
     #   deepeval
     #   langfuse
@@ -590,6 +700,8 @@ opentelemetry-sdk==1.34.1
     #   opentelemetry-exporter-otlp-proto-http
 opentelemetry-semantic-conventions==0.55b1
     # via
+    #   arize-phoenix
+    #   arize-phoenix-otel
     #   openinference-instrumentation-llama-index
     #   opentelemetry-instrumentation
     #   opentelemetry-sdk
@@ -601,6 +713,7 @@ orjson==3.10.18
     # via
     #   chromadb
     #   gradio
+    #   langsmith
 overrides==7.7.0
     # via
     #   chromadb
@@ -609,6 +722,7 @@ packaging==24.2
     # via
     #   black
     #   build
+    #   datasets
     #   gradio
     #   gradio-client
     #   huggingface-hub
@@ -618,16 +732,22 @@ packaging==24.2
     #   jupyterlab
     #   jupyterlab-code-formatter
     #   jupyterlab-server
+    #   langchain-core
     #   langfuse
+    #   langsmith
     #   marshmallow
     #   nbconvert
     #   onnxruntime
     #   opentelemetry-instrumentation
     #   pytest
     #   pytest-rerunfailures
+    #   strawberry-graphql
     #   transformers
 pandas==2.2.3
     # via
+    #   arize-phoenix
+    #   arize-phoenix-evals
+    #   datasets
     #   gradio
     #   llama-index-readers-file
 pandocfilters==1.5.1
@@ -666,7 +786,9 @@ posthog==3.25.0
 pre-commit==4.2.0
     # via anime-assistant (setup.cfg)
 prometheus-client==0.22.1
-    # via jupyter-server
+    # via
+    #   arize-phoenix
+    #   jupyter-server
 prompt-toolkit==3.0.51
     # via ipython
 propcache==0.3.2
@@ -675,17 +797,24 @@ propcache==0.3.2
     #   yarl
 protobuf==5.29.5
     # via
+    #   arize-phoenix
     #   googleapis-common-protos
     #   onnxruntime
     #   opentelemetry-proto
 psutil==7.0.0
-    # via ipykernel
+    # via
+    #   arize-phoenix
+    #   ipykernel
 ptyprocess==0.7.0
     # via
     #   pexpect
     #   terminado
 pure-eval==0.2.3
     # via stack-data
+pyarrow==21.0.0
+    # via
+    #   arize-phoenix
+    #   datasets
 pyasn1==0.6.1
     # via
     #   pyasn1-modules
@@ -699,12 +828,16 @@ pycparser==2.22
 pydantic==2.11.7
     # via
     #   anthropic
+    #   arize-phoenix
     #   banks
     #   chromadb
     #   fastapi
     #   google-genai
     #   gradio
+    #   langchain
+    #   langchain-core
     #   langfuse
+    #   langsmith
     #   llama-cloud
     #   llama-cloud-services
     #   llama-index-core
@@ -713,10 +846,13 @@ pydantic==2.11.7
     #   ollama
     #   openai
     #   pydantic-settings
+    #   ragas
 pydantic-core==2.33.2
     # via pydantic
 pydantic-settings==2.10.1
-    # via anime-assistant (setup.cfg)
+    # via
+    #   anime-assistant (setup.cfg)
+    #   langchain-community
 pydub==0.25.1
     # via gradio
 pyfiglet==1.0.3
@@ -752,11 +888,13 @@ pytest-xdist==3.8.0
     # via deepeval
 python-dateutil==2.9.0.post0
     # via
+    #   arize-phoenix
     #   arrow
     #   jupyter-client
     #   kubernetes
     #   pandas
     #   posthog
+    #   strawberry-graphql
 python-dotenv==1.1.1
     # via
     #   llama-cloud-services
@@ -765,16 +903,22 @@ python-dotenv==1.1.1
 python-json-logger==3.3.0
     # via jupyter-events
 python-multipart==0.0.20
-    # via gradio
+    # via
+    #   arize-phoenix
+    #   gradio
 pytz==2025.2
     # via pandas
 pyyaml==6.0.2
     # via
     #   chromadb
+    #   datasets
     #   gradio
     #   huggingface-hub
     #   jupyter-events
     #   kubernetes
+    #   langchain
+    #   langchain-community
+    #   langchain-core
     #   llama-index-core
     #   pre-commit
     #   transformers
@@ -784,6 +928,8 @@ pyzmq==27.0.0
     #   ipykernel
     #   jupyter-client
     #   jupyter-server
+ragas==0.3.0
+    # via anime-assistant (setup.cfg)
 referencing==0.36.2
     # via
     #   jsonschema
@@ -796,23 +942,30 @@ regex==2024.11.6
     #   transformers
 requests==2.32.4
     # via
+    #   datasets
     #   deepeval
     #   google-genai
     #   huggingface-hub
     #   jupyterlab-server
     #   kubernetes
+    #   langchain
+    #   langchain-community
     #   langfuse
+    #   langsmith
     #   llama-index-core
     #   opentelemetry-exporter-otlp-proto-http
     #   posthog
     #   requests-cache
     #   requests-oauthlib
+    #   requests-toolbelt
     #   tiktoken
     #   transformers
 requests-cache==1.2.1
     # via anime-assistant (setup.cfg)
 requests-oauthlib==2.0.0
     # via kubernetes
+requests-toolbelt==1.0.0
+    # via langsmith
 rfc3339-validator==0.1.4
     # via
     #   jsonschema
@@ -841,9 +994,12 @@ safehttpx==0.1.6
 safetensors==0.5.3
     # via transformers
 scikit-learn==1.7.0
-    # via sentence-transformers
+    # via
+    #   arize-phoenix
+    #   sentence-transformers
 scipy==1.16.0
     # via
+    #   arize-phoenix
     #   scikit-learn
     #   sentence-transformers
 semantic-version==2.10.0
@@ -889,13 +1045,23 @@ sniffio==1.3.1
 soupsieve==2.7
     # via beautifulsoup4
 sqlalchemy==2.0.41
-    # via llama-index-core
+    # via
+    #   alembic
+    #   arize-phoenix
+    #   langchain
+    #   langchain-community
+    #   llama-index-core
+sqlean-py==3.49.1
+    # via arize-phoenix
 stack-data==0.6.3
     # via ipython
 starlette==0.46.2
     # via
+    #   arize-phoenix
     #   fastapi
     #   gradio
+strawberry-graphql==0.270.1
+    # via arize-phoenix
 striprtf==0.0.26
     # via llama-index-readers-file
 sympy==1.14.0
@@ -909,6 +1075,8 @@ tenacity==8.5.0
     #   chromadb
     #   deepeval
     #   google-genai
+    #   langchain-community
+    #   langchain-core
     #   llama-cloud-services
     #   llama-index-core
 terminado==0.18.1
@@ -918,7 +1086,10 @@ terminado==0.18.1
 threadpoolctl==3.6.0
     # via scikit-learn
 tiktoken==0.9.0
-    # via llama-index-core
+    # via
+    #   langchain-openai
+    #   llama-index-core
+    #   ragas
 tinycss2==1.4.0
     # via bleach
 tokenizers==0.21.2
@@ -938,7 +1109,11 @@ tornado==6.5.1
     #   terminado
 tqdm==4.67.1
     # via
+    #   arize-phoenix
+    #   arize-phoenix-client
+    #   arize-phoenix-evals
     #   chromadb
+    #   datasets
     #   deepeval
     #   huggingface-hub
     #   llama-index-core
@@ -977,8 +1152,13 @@ typing-extensions==4.14.1
     # via
     #   aiosignal
     #   aiosqlite
+    #   alembic
     #   anthropic
     #   anyio
+    #   arize-phoenix
+    #   arize-phoenix-client
+    #   arize-phoenix-evals
+    #   arize-phoenix-otel
     #   beautifulsoup4
     #   cattrs
     #   chromadb
@@ -987,6 +1167,7 @@ typing-extensions==4.14.1
     #   gradio
     #   gradio-client
     #   huggingface-hub
+    #   langchain-core
     #   llama-index-core
     #   mypy
     #   openai
@@ -1001,6 +1182,7 @@ typing-extensions==4.14.1
     #   referencing
     #   sentence-transformers
     #   sqlalchemy
+    #   strawberry-graphql
     #   torch
     #   typer
     #   typing-inspect
@@ -1028,6 +1210,7 @@ urllib3==2.5.0
 uvicorn==0.35.0
     # via
     #   anime-assistant (setup.cfg)
+    #   arize-phoenix
     #   chromadb
     #   gradio
 uvloop==0.21.0
@@ -1038,6 +1221,8 @@ watchfiles==1.1.0
     # via uvicorn
 wcwidth==0.2.13
     # via prompt-toolkit
+weaviate==0.1.2
+    # via anime-assistant (setup.cfg)
 webcolors==24.11.1
     # via jsonschema
 webencodings==0.5.1
@@ -1057,11 +1242,15 @@ wheel==0.45.1
     # via deepeval
 wrapt==1.17.2
     # via
+    #   arize-phoenix
+    #   arize-phoenix-otel
     #   deprecated
     #   langfuse
     #   llama-index-core
     #   openinference-instrumentation-llama-index
     #   opentelemetry-instrumentation
+xxhash==3.5.0
+    # via datasets
 yarl==1.20.1
     # via aiohttp
 zipp==3.23.0
@@ -1087,3 +1276,5 @@ zope-lifecycleevent==5.1
     # via node
 zope-proxy==6.1
     # via zope-deferredimport
+zstandard==0.23.0
+    # via langsmith
