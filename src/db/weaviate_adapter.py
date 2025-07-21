@@ -55,6 +55,8 @@ def generate_fake_documents(n: int = 10) -> list[dict[str, Any]]:
 def add_objs_to_collection(  # type: ignore[no-any-unimported]
     documents: list[dict[str, Any]],
     collection: weaviate.collections.Collection,
+    batch_size: int = 20,
+    concurrent_requests: int = 5,
 ) -> int:
     """
     Adds a list of document objects to a Weaviate collection in batches.
@@ -71,7 +73,9 @@ def add_objs_to_collection(  # type: ignore[no-any-unimported]
     if len(documents) == 0:
         return 0
 
-    with collection.batch.fixed_size(batch_size=20, concurrent_requests=5) as batch:
+    with collection.batch.fixed_size(
+        batch_size=batch_size, concurrent_requests=concurrent_requests
+    ) as batch:
         for document in tqdm(documents):
             batch.add_object(properties=document)
 
@@ -105,8 +109,8 @@ def create_collection(  # type: ignore[no-any-unimported]
             ]
         vectorize_collection_name: Whether to append the collection name to the text
             to be vectorized.
-        inference_url: URL of the inference service for vectorization.
-
+    Returns:
+        The created or existing Weaviate collection.
     """
     if client.collections.exists(name):
         logger.info(f"Collection '{name}' already exists. Returning existing.")
