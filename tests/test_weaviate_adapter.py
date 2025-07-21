@@ -6,6 +6,7 @@ from weaviate.classes.query import Rerank
 from weaviate.collections import Collection
 
 from src.db.weaviate_adapter import QueryType
+from src.db.weaviate_adapter import add_objs_to_collection
 from src.db.weaviate_adapter import query_collection
 
 
@@ -117,3 +118,37 @@ def test_query_collection_with_rerank(mock_collection):
     mock_collection.query.near_text.assert_called_once_with(
         query="rerank query", limit=1, filters=None, rerank=rerank
     )
+
+
+@pytest.fixture
+def mock_collection_with_batch():
+    mock_collection = MagicMock()
+    mock_batch_manager = MagicMock()
+    mock_batch_context = MagicMock()
+    mock_batch_manager.fixed_size.return_value.__enter__.return_value = (
+        mock_batch_context
+    )
+    mock_collection.batch = mock_batch_manager
+    mock_collection.batch.failed_objects = []
+    return mock_collection, mock_batch_manager, mock_batch_context
+
+
+def test_add_objs_to_collection_empty_list(mock_collection_with_batch):
+    mock_collection, _, _ = mock_collection_with_batch
+    result = add_objs_to_collection([], mock_collection)
+    assert result == 0
+
+
+def test_add_objs_to_collection_adds_all_documents(mock_collection_with_batch):
+    mock_collection, mock_batch_manager, mock_batch_context = mock_collection_with_batch
+    docs = [{"a": 1}, {"b": 2}, {"c": 3}]
+    result = add_objs_to_collection(
+        docs, mock_collection, batch_size=2, concurrent_requests=1
+    )
+    mock_batch_manager.fixed_size.assert_called_once_with(
+        batch_size=2, concurrent_requests=1
+    )
+    assert mock_batch_context.add_object.call_count == 3
+    for doc in docs:
+        mock_batch_context.add_object.assert_any_call(properties=doc)
+    assert result == 3
