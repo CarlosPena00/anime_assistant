@@ -55,9 +55,21 @@ def generate_fake_documents(n: int = 10) -> list[dict[str, Any]]:
 def add_objs_to_collection(  # type: ignore[no-any-unimported]
     documents: list[dict[str, Any]],
     collection: weaviate.collections.Collection,
-) -> None:
+) -> int:
+    """
+    Adds a list of document objects to a Weaviate collection in batches.
+
+    Args:
+        documents (list[dict[str, Any]]): A list of dictionaries, each representing an
+            object to be added to the collection.
+        collection (weaviate.collections.Collection): The Weaviate collection to which
+            the objects will be added.
+
+    Returns:
+        None
+    """
     if len(documents) == 0:
-        return
+        return 0
 
     with collection.batch.fixed_size(batch_size=20, concurrent_requests=5) as batch:
         for document in tqdm(documents):
@@ -65,8 +77,9 @@ def add_objs_to_collection(  # type: ignore[no-any-unimported]
 
     failed_objects = collection.batch.failed_objects
     if failed_objects:
-        logger.info(f"Number of failed imports: {len(failed_objects)}")
-        logger.info(f"First failed object: {failed_objects[0]}")
+        logger.warning(f"Number of failed imports: {len(failed_objects)}")
+        logger.warning(f"First failed object: {failed_objects[0]}")
+    return len(documents)
 
 
 def create_collection(  # type: ignore[no-any-unimported]
