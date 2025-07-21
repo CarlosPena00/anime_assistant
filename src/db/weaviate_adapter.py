@@ -4,6 +4,7 @@ from typing import Any
 
 import weaviate
 from faker import Faker
+from loguru import logger
 from tqdm import tqdm
 from weaviate.classes.config import Configure
 from weaviate.classes.config import DataType
@@ -11,7 +12,6 @@ from weaviate.classes.config import Property
 from weaviate.classes.query import Filter
 from weaviate.classes.query import Rerank
 from weaviate.collections import Collection
-from weaviate.util import generate_uuid5
 
 client = weaviate.connect_to_local(port=8079)
 
@@ -44,7 +44,7 @@ def generate_fake_documents(n: int = 10) -> list[dict[str, Any]]:
             "description": fake.sentence(),
             "price": fake.pyfloat(left_digits=2, right_digits=2, positive=True),
             "category": fake.word(),
-            "created_at": fake.iso8601(),
+            "created_at": fake.iso8601() + "Z",  # requires RFC3339 formatted date
             "user_ratings": random.randint(1, 5),
             "budget": fake.random_element(elements=["Low", "Moderate", "High"]),
         }
@@ -61,10 +61,12 @@ def add_objs_to_collection(  # type: ignore[no-any-unimported]
 
     with collection.batch.fixed_size(batch_size=20, concurrent_requests=5) as batch:
         for document in tqdm(documents):
-            batch.add_object(
-                properties=document,
-                uuid=generate_uuid5(document.get("id"), collection.name),
-            )
+            batch.add_object(properties=document)
+
+    failed_objects = collection.batch.failed_objects
+    if failed_objects:
+        logger.info(f"Number of failed imports: {len(failed_objects)}")
+        logger.info(f"First failed object: {failed_objects[0]}")
 
 
 def create_collection(  # type: ignore[no-any-unimported]
@@ -72,7 +74,6 @@ def create_collection(  # type: ignore[no-any-unimported]
     source_properties: list[str],
     properties: list[Property],
     vectorize_collection_name: bool = False,
-    inference_url: str = "http://127.0.0.1:5000",
 ) -> weaviate.collections.Collection:
     """
     Create a collection in Weaviate if it does not exist.
@@ -95,19 +96,17 @@ def create_collection(  # type: ignore[no-any-unimported]
 
     """
     if client.collections.exists(name):
+        logger.info(f"Collection '{name}' already exists. Returning existing.")
         return client.collections.get(name)
 
     vector_config = Configure.Vectors.text2vec_transformers(
         name=name,
         source_properties=source_properties,
         vectorize_collection_name=vectorize_collection_name,
-        inference_url=inference_url,
     )
-
     collection = client.collections.create(
         name=name,
         vector_config=vector_config,
-        reranker_config=Configure.Reranker.transformers(),
         properties=properties,
     )
     return collection
@@ -182,9 +181,8 @@ def query_collection(  # type: ignore[no-any-unimported]
 
 
 if __name__ == "__main__":
-    docs = generate_fake_documents(30)
     products_collection = create_collection(
-        name="products3",
+        name="products",
         source_properties=["name", "description", "category", "price"],
         properties=[
             Property(name="pid", data_type=DataType.UUID, vectorize_property_name=True),
@@ -197,9 +195,7 @@ if __name__ == "__main__":
                 vectorize_property_name=True,
             ),
             Property(
-                name="price",
-                data_type=DataType.NUMBER,
-                vectorize_property_name=True,
+                name="price", data_type=DataType.NUMBER, vectorize_property_name=True
             ),
             Property(
                 name="category", data_type=DataType.TEXT, vectorize_property_name=True
@@ -212,6 +208,15 @@ if __name__ == "__main__":
         ],
         vectorize_collection_name=False,
     )
+    docs = generate_fake_documents(30)
+    count = len(products_collection)
+    logger.info(f"Total documents in collection: {count}")
+
     add_objs_to_collection(docs, products_collection)
-    query_collection(collection=products_collection, query="Foo")
+    count = len(products_collection)
+    logger.info(f"Total documents in collection: {count}")
+
+    sample = products_collection.query.fetch_objects(limit=3)
+    logger.info("Sample documents:", sample)
+
     client.close()
