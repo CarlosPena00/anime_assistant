@@ -12,6 +12,7 @@ from weaviate.classes.config import Property
 from weaviate.classes.query import Filter
 from weaviate.classes.query import Rerank
 from weaviate.collections import Collection
+from weaviate.collections.classes.internal import QueryReturn
 
 client = weaviate.connect_to_local(port=8079)
 
@@ -137,7 +138,7 @@ def query_collection(  # type: ignore[no-any-unimported]
     query_type: QueryType = QueryType.SEMANTIC_SEARCH,
     alpha: float = 0.5,
     rerank: Rerank | None = None,
-) -> list[dict[str, Any]]:
+) -> QueryReturn:
     """
     Query a collection in Weaviate.
 
@@ -194,7 +195,7 @@ def query_collection(  # type: ignore[no-any-unimported]
             filters=filters,
             rerank=rerank,
         )
-    return result  # type: ignore[no-any-return]
+    return result
 
 
 if __name__ == "__main__":
@@ -233,7 +234,13 @@ if __name__ == "__main__":
     count = len(products_collection)
     logger.info(f"Total documents in collection: {count}")
 
-    sample = products_collection.query.fetch_objects(limit=3)
-    logger.info("Sample documents:", sample)
+    sample = query_collection(
+        collection=products_collection,
+        query="Smart TV",
+        limit=5,
+        query_type=QueryType.HYBRID_SEARCH,
+    )
+    description = [r.properties["description"] for r in sample.objects]
+    logger.info(f"Sample documents: {description}")
 
     client.close()
