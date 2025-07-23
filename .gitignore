@@ -188,3 +188,4 @@ micromamba.mk
 .micromambaenv
 .vscode/settings.json
 books/5.5*
+books/data/*
